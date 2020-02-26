@@ -1,0 +1,3 @@
+C:/Users/Asus/CLionProjects/Abbyy/cmake-build-debug/CMakeFiles/MyCompiler.dir
+C:/Users/Asus/CLionProjects/Abbyy/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/Asus/CLionProjects/Abbyy/cmake-build-debug/CMakeFiles/rebuild_cache.dir
