@@ -4,8 +4,8 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "C:/Users/Asus/CLionProjects/Abbyy/cmake-build-debug/lexer.cpp" "C:/Users/Asus/CLionProjects/Abbyy/cmake-build-debug/CMakeFiles/MyCompiler.dir/lexer.cpp.obj"
-  "C:/Users/Asus/CLionProjects/Abbyy/main.cpp" "C:/Users/Asus/CLionProjects/Abbyy/cmake-build-debug/CMakeFiles/MyCompiler.dir/main.cpp.obj"
+  "/home/evgenia/CLionProjects/CompilerAbbyy/cmake-build-debug/lexer.cpp" "/home/evgenia/CLionProjects/CompilerAbbyy/cmake-build-debug/CMakeFiles/MyCompiler.dir/lexer.cpp.o"
+  "/home/evgenia/CLionProjects/CompilerAbbyy/main.cpp" "/home/evgenia/CLionProjects/CompilerAbbyy/cmake-build-debug/CMakeFiles/MyCompiler.dir/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

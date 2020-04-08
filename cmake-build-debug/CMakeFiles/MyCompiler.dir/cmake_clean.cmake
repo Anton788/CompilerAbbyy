@@ -1,11 +1,9 @@
 file(REMOVE_RECURSE
-  "lexer.cpp"
-  "CMakeFiles/MyCompiler.dir/main.cpp.obj"
-  "CMakeFiles/MyCompiler.dir/lexer.cpp.obj"
+  "CMakeFiles/MyCompiler.dir/lexer.cpp.o"
+  "CMakeFiles/MyCompiler.dir/main.cpp.o"
+  "MyCompiler"
   "MyCompiler.pdb"
-  "MyCompiler.exe"
-  "MyCompiler.exe.manifest"
-  "libMyCompiler.dll.a"
+  "lexer.cpp"
 )
 
 # Per-language clean rules from dependency scanning.
