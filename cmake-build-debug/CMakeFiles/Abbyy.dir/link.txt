@@ -1,3 +1,0 @@
-"C:\Program Files\JetBrains\CLion 2018.2.4\bin\cmake\win\bin\cmake.exe" -E remove -f CMakeFiles\Abbyy.dir/objects.a
-C:\PROGRA~2\MINGW-~1\I686-8~1.0-P\mingw32\bin\ar.exe cr CMakeFiles\Abbyy.dir/objects.a @CMakeFiles\Abbyy.dir\objects1.rsp
-C:\PROGRA~2\MINGW-~1\I686-8~1.0-P\mingw32\bin\G__~1.EXE -g   -Wl,--whole-archive CMakeFiles\Abbyy.dir/objects.a -Wl,--no-whole-archive  -o Abbyy.exe -Wl,--out-implib,libAbbyy.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\Abbyy.dir\linklibs.rsp
