@@ -1,3 +1,0 @@
-/home/evgenia/CLionProjects/CompilerAbbyy/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/evgenia/CLionProjects/CompilerAbbyy/cmake-build-debug/CMakeFiles/MyCompiler.dir
-/home/evgenia/CLionProjects/CompilerAbbyy/cmake-build-debug/CMakeFiles/edit_cache.dir
