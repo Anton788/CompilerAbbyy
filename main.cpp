@@ -1,3 +1,5 @@
+#include <unordered_map>
+#include <streambuf>
 #include <iostream>
 #include <cstring>
 #include "MiniJava.Lexel.h"
@@ -12,5 +14,6 @@ int main() {
     yylex_destroy(scanner);
     //yyparse();
     //yy::parser parser(lexer, res);
+
     return 0;
 }

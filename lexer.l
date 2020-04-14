@@ -1,5 +1,4 @@
 %option reentrant noyywrap never-interactive nounistd
-
 %option outfile="MiniJava.Lexer.cpp" header-file="MiniJava.Lexer.h"
 
 %{
