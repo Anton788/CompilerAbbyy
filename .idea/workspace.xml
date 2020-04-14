@@ -13,6 +13,20 @@
   <component name="ChangeListManager">
     <list default="true" id="a774a6b2-be43-4feb-b6a3-21454f543b44" name="Default Changelist" comment="ok">
       <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Samples/BinarySearch.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Samples/BinaryTree.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Samples/BubbleSort.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Samples/Factorial.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Samples/LinearSearch.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Samples/LinkedList.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Samples/QuickSort.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Samples/TreeVisitor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Samples/minitest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sources/CompVisitor.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sources/SyntaxTree.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sources/Visitor.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sources/main.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sources/parser.y" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MiniJava.Lexel.h" beforeDir="false" />
@@ -62,7 +76,7 @@
       <change beforePath="$PROJECT_DIR$/lex.yy.c" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/lex.yy.cc" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/lexer.l" beforeDir="false" afterPath="$PROJECT_DIR$/sources/lexer.l" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/sources/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
