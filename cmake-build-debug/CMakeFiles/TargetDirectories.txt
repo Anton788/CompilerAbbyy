@@ -1,0 +1,3 @@
+/home/alena/CLionProjects/CompilerAbbyy/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/alena/CLionProjects/CompilerAbbyy/cmake-build-debug/CMakeFiles/Lexer.dir
+/home/alena/CLionProjects/CompilerAbbyy/cmake-build-debug/CMakeFiles/edit_cache.dir
