@@ -1,13 +1,17 @@
-%option reentrant noyywrap never-interactive nounistd
-%option outfile="MiniJava.Lexer.cpp" header-file="MiniJava.Lexer.h"
-
 %{
-
+#include <kParser.hpp>
 #include <string>
 #include <iostream>
 
+
 int yylen;
 %}
+
+%option prefix="k"
+%option reentrant noyywrap never-interactive nounistd
+%option bison-bridge
+
+
 
 
 
@@ -16,12 +20,13 @@ LETTER          [a-zA-Z]
 Id              {LETTER}({DIGIT}|{LETTER})*
 Integer         [1-9]{DIGIT}*|0
 Operation       ( "&&" | "<" | "+" | "-" | "*" )
-
+SPACE           [\n\r\t ]+
 
 %%
 
-{Id}            printf("ID ("<<string(yytext,yylen)<<")");
+{Id}            printf("ID ");
 {Integer}       printf("INT ");
+{SPACE}     printf("");
 "class"         printf("CLASS ");
 "public"        printf("PUBLIC ");
 "static"        printf("STATIC ");
@@ -63,6 +68,8 @@ Operation       ( "&&" | "<" | "+" | "-" | "*" )
 
 "true"          printf("TRUE ");
 "false"         printf("FALSE ");
+
+
+
 .               printf("ERROR ");
-\n\r|\r\n|\n|\r { /* skip empty line */ }
 %%
