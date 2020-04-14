@@ -1,1 +1,0 @@
-/usr/bin/c++  -g   CMakeFiles/MyCompiler.dir/main.cpp.o CMakeFiles/MyCompiler.dir/lexer.cpp.o  -o MyCompiler 
