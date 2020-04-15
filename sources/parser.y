@@ -112,10 +112,10 @@ Expression: INTEGER[N] { $$ = new NumExpression( $N ); }
     | TRUE { $$ = new BoolExpression( true ); }
     | FALSE { $$ = new BoolExpression( false ); }
     | THIS {$$ = new ThisExpression(); }
+    | LBRACKET Expression[N] RBRACKET { $$ = $N;}
     | Expression[L] PLUS Expression[R] { $$ = new BinopExpression( $L, BinopExpression::OC_Plus, $R ); }
     | Expression[L] MUL Expression[R] { $$ = new BinopExpression( $L, BinopExpression::OC_Mul, $R ); }
     | Expression[L] MINUS Expression[R] { $$ = new BinopExpression( $L, BinopExpression::OC_Minus, $R ); }
     | Expression[L] LESS Expression[R] { $$ = new BinopExpression( $L, BinopExpression::OC_Less, $R ); }
     | Expression[L] AND Expression[R] { $$ = new BinopExpression( $L, BinopExpression::OC_And, $R ); }
-
 ;

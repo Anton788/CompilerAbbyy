@@ -3,6 +3,7 @@
 #include <memory>
 #include <Visitor.h>
 #include <assert.h>
+#include <vector>
 
 class Expression {
 public:
@@ -73,3 +74,7 @@ public:
 private:
     const int value;
 };
+
+typedef std::shared_ptr<ThisExpression > PThisExpression ;
+
+

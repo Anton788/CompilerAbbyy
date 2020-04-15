@@ -11,6 +11,7 @@ public:
     virtual void visit( const NumExpression* ) = 0;
     virtual void visit( const BoolExpression* ) = 0;
     virtual void visit( const ThisExpression* ) = 0;
+   // virtual void visit( const SquareBracketExpression* ) = 0;
 
 
 };
@@ -21,6 +22,7 @@ public:
     virtual void visit( const NumExpression* );
     virtual void visit( const BoolExpression* ) ;
     virtual void visit( const ThisExpression* ) ;
+   // virtual void visit( const SquareBracketExpression* );
 
     int GetValue() const { return subtreeValue; }
 
