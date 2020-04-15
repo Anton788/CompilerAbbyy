@@ -36,11 +36,9 @@ typedef void* yyscan_t;
     int Number;
     Expression* Exp;
 }
+
 %token IS_EQUAL
 %token AND
-%token OR
-%token MOD
-%token MORE
 %token LESS
 %token MINUS
 %token MUL
@@ -51,7 +49,7 @@ typedef void* yyscan_t;
 %token<Number> INTEGER
 %token<std::string> LOGICAL
 %token<std::string> ID
-%token<std::string> PRIVACY
+%token PUBLIC
 %token EXTENDS
 %token RETURN
 %token INT
@@ -83,9 +81,8 @@ typedef void* yyscan_t;
 
 %left IS_EQUAL
 %left AND
-%left OR
 %left PLUS MINUS
-%left MUL MOD
+%left MUL
 
 %right UNARY_NEGATION
 

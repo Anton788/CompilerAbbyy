@@ -14,9 +14,6 @@ int yylen;
 
 L_IS_EQUAL "=="
 L_AND "&&"
-L_OR "||"
-L_MOD "%"
-L_MORE ">"
 L_LESS "<"
 L_MUL "*"
 L_MINUS "-"
@@ -37,7 +34,7 @@ L_VOID       "void"
 L_MAIN       "main"
 L_EXTENDS    "extends"
 L_RETURN     "return"
-L_PRIVACY    "private"|"public"
+L_PUBLIC     "public"
 L_PRINT       "System.out.println"
 L_LENGTH     "length"
 L_NEW        "new"
@@ -66,15 +63,6 @@ L_RBRACE "}"
 {L_IS_EQUAL}  { cout << "IS_EQUAL "; return IS_EQUAL; }
 {L_AND}  {
              cout << "AND "; return AND;
-         }
-{L_OR} {
-           cout << "OR "; return OR;
-       }
-{L_MOD} {
-            cout << "MOD "; return MOD;
-        }
-{L_MORE} {
-             cout << "MORE "; return MORE;
          }
 {L_LESS} {
              cout << "LESS "; return LESS;
@@ -178,8 +166,8 @@ L_RBRACE "}"
     cout<<"VOID "; return VOID;
 }
 
-{L_PRIVACY} {
-    cout<<"PRIVACY "; return PRIVACY;
+{L_PUBLIC} {
+    cout<<"PUBLIC "; return PUBLIC;
 }
 
 {L_RETURN} {
