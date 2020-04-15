@@ -43,11 +43,12 @@ typedef void* yyscan_t;
 %token MINUS
 %token MUL
 %token PLUS
+%token FALSE
+%token TRUE
 
 
 
 %token<Number> INTEGER
-%token<std::string> LOGICAL
 %token<std::string> ID
 %token PUBLIC
 %token EXTENDS
@@ -108,6 +109,13 @@ Start: Expression[E] { result = $E; }
 ;
 
 Expression: INTEGER[N] { $$ = new NumExpression( $N ); }
+    | TRUE { $$ = new BoolExpression( true ); }
+    | FALSE { $$ = new BoolExpression( false ); }
+    | THIS {$$ = new ThisExpression(); }
     | Expression[L] PLUS Expression[R] { $$ = new BinopExpression( $L, BinopExpression::OC_Plus, $R ); }
     | Expression[L] MUL Expression[R] { $$ = new BinopExpression( $L, BinopExpression::OC_Mul, $R ); }
+    | Expression[L] MINUS Expression[R] { $$ = new BinopExpression( $L, BinopExpression::OC_Minus, $R ); }
+    | Expression[L] LESS Expression[R] { $$ = new BinopExpression( $L, BinopExpression::OC_Less, $R ); }
+    | Expression[L] AND Expression[R] { $$ = new BinopExpression( $L, BinopExpression::OC_And, $R ); }
+
 ;

@@ -75,6 +75,7 @@ int main( int argc, char* argv[] )
         if( kparse( lexer, result ) ) {
             status = -13;
         } else {
+
             CompVisitor v;
             result->accept( &v );
 

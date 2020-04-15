@@ -47,7 +47,6 @@ L_INT        "int"
 L_DIGIT      [0-9]
 L_LETTER     [a-zA-Z_]
 L_INTEGER   [1-9]{L_DIGIT}*|0
-L_LOGIC     {L_TRUE}|{L_FALSE}
 L_ID         {L_LETTER}({L_DIGIT}|{L_LETTER})*
 L_COMMENT    (\/\/.*)|(\/\*((.|\n)*?)\*\/)
 L_LBRACKET "("
@@ -112,8 +111,12 @@ L_RBRACE "}"
     cout << "UNARY_NEGATION "; return UNARY_NEGATION;
 }
 
-
-
+{L_TRUE} {
+    cout<<"TRUE "; return TRUE;
+}
+{L_FALSE} {
+    cout<<"FALSE "; return FALSE;
+}
 {L_EXTENDS} {
     cout << "EXTENDS ";
     return EXTENDS;
@@ -193,12 +196,6 @@ L_RBRACE "}"
     yylval->Number = (atoi(yytext));
     cout << "INTEGER ";
     return INTEGER;
-}
-
-{L_LOGIC} {
-    //запомнить
-    cout << "LOGICAL ";
-    return LOGICAL;
 }
 
 {L_LENGTH} {
