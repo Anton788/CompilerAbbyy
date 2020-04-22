@@ -3,6 +3,7 @@
 #include <memory>
 #include <Visitor.h>
 #include <assert.h>
+#include <vector>
 
 class Expression {
 public:
@@ -26,6 +27,9 @@ public:
     enum TOpCode {
         OC_Plus,
         OC_Mul,
+        OC_And,
+        OC_Minus,
+        OC_Less,
     };
     BinopExpression( Expression* _left, TOpCode _code, Expression* _right ) :
             code( _code ),
@@ -47,3 +51,30 @@ private:
     std::unique_ptr<Expression> left;
     std::unique_ptr<Expression> right;
 };
+
+class BoolExpression : public Expression {
+public:
+    BoolExpression( bool _value ) : value( _value ) {}
+
+    bool Value() const { return value; }
+
+    virtual void accept( Visitor* v ) const override { assert( v != 0 ); v->visit( this ); }
+private:
+    const bool value;
+};
+
+
+class ThisExpression : public Expression {
+public:
+    ThisExpression() : value( -1 ) {}
+
+    int Value() const { return value; }
+
+    virtual void accept( Visitor* v ) const override { assert( v != 0 ); v->visit( this ); }
+private:
+    const int value;
+};
+
+typedef std::shared_ptr<ThisExpression > PThisExpression ;
+
+

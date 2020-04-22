@@ -62,7 +62,7 @@ int main( int argc, char* argv[] )
 
         int code = klex( &semanticValue, lexer );
         while( code != 0 ) {
-            if( code == NUMBER ) {
+            if( code == INTEGER) {
                 cout << "<" << semanticValue.Number << "> ";
             }
             code = klex( &semanticValue, lexer );
@@ -75,6 +75,7 @@ int main( int argc, char* argv[] )
         if( kparse( lexer, result ) ) {
             status = -13;
         } else {
+
             CompVisitor v;
             result->accept( &v );
 
