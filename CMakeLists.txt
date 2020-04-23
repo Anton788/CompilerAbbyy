@@ -17,7 +17,7 @@ BISON_TARGET( MyParser ${CMAKE_SOURCE_DIR}/sources/parser.y
 add_executable(
         Lexer
         ${CMAKE_SOURCE_DIR}/sources/main.cpp
-        ${CMAKE_SOURCE_DIR}/sources/CompVisitor.cpp
+        ${CMAKE_SOURCE_DIR}/sources/PrintVisitor.cpp
         ${FLEX_MyLexer_OUTPUTS}
         ${BISON_MyParser_OUTPUTS}
 )

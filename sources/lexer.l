@@ -212,7 +212,7 @@ L_RBRACE "}"
 }
 
 {L_ID} {
-    //запомнить
+    yylval->Identifier = yytext;
     cout << "ID ";
     return ID;
 }

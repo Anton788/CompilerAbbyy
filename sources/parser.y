@@ -34,7 +34,9 @@ typedef void* yyscan_t;
 
 %union {
     int Number;
+    char* Identifier;
     Expression* Exp;
+    ArgumentList* ExpressionList;
 }
 
 %token IS_EQUAL
@@ -49,7 +51,7 @@ typedef void* yyscan_t;
 
 
 %token<Number> INTEGER
-%token<std::string> ID
+%token<Identifier> ID
 %token PUBLIC
 %token EXTENDS
 %token RETURN
@@ -100,6 +102,7 @@ typedef void* yyscan_t;
 %left RSQUAREBRACKET
 
 %type <Exp> Expression
+%type <ExpressionList> ExpressionList
 
 %destructor { delete $$; } Expression
 
@@ -109,9 +112,10 @@ Start: Expression[E] { result = $E; }
 ;
 
 Expression: INTEGER[N] { $$ = new NumExpression( $N ); }
+	| ID[N] {$$ = new IdExpression($N);}
     | TRUE { $$ = new BoolExpression( true ); }
     | FALSE { $$ = new BoolExpression( false ); }
-    | THIS {$$ = new ThisExpression(); }
+    | THIS DOT ID[I] LBRACKET ExpressionList[L] RBRACKET {$$ = new CallExpression($I, $L); }
     | LBRACKET Expression[N] RBRACKET { $$ = $N;}
     | Expression[L] PLUS Expression[R] { $$ = new BinopExpression( $L, BinopExpression::OC_Plus, $R ); }
     | Expression[L] MUL Expression[R] { $$ = new BinopExpression( $L, BinopExpression::OC_Mul, $R ); }
@@ -119,3 +123,8 @@ Expression: INTEGER[N] { $$ = new NumExpression( $N ); }
     | Expression[L] LESS Expression[R] { $$ = new BinopExpression( $L, BinopExpression::OC_Less, $R ); }
     | Expression[L] AND Expression[R] { $$ = new BinopExpression( $L, BinopExpression::OC_And, $R ); }
 ;
+
+ExpressionList:
+| Expression[L] COMMA ExpressionList[R]{$$ = new ArgumentList($L, $R);}
+| Expression[N] {$$ = new ArgumentList($N);}
+| %empty {$$ = new ArgumentList();}

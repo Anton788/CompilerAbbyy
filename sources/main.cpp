@@ -4,7 +4,7 @@
 #include <string>
 #include <SyntaxTree.h>
 #include <Visitor.h>
-
+#include <PrintVisitor.h>
 #include <kParser.hpp>
 #include <kLexer.h>
 
@@ -75,11 +75,9 @@ int main( int argc, char* argv[] )
         if( kparse( lexer, result ) ) {
             status = -13;
         } else {
-
-            CompVisitor v;
-            result->accept( &v );
-
-            cout << "Result is " << v.GetValue() << endl;
+            SyntaxTreePrinter v;
+            result->accept(&v);
+            cout<<v.ToString()<<endl;
         }
         delete result;
     }
