@@ -1,4 +1,4 @@
-#include <Visitor.h>
+/*#include <Visitor.h>
 #include <SyntaxTree.h>
 #include <iostream>
 #include <assert.h>
@@ -54,3 +54,4 @@ void CompVisitor::visit( const ThisExpression* e )
     assert( e != 0 );
     subtreeValue = e->Value();
 }
+*/

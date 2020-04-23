@@ -63,8 +63,57 @@ private:
     const bool value;
 };
 
+class ArgumentList{
+public:
+    ArgumentList(){}
+    ArgumentList(Expression* e){
+        argumentList.push_back(e);
+    }
 
-class ThisExpression : public Expression {
+    ArgumentList(Expression* e, ArgumentList* list){
+        list->argumentList.swap(argumentList);
+        argumentList.insert(argumentList.begin(), e);
+    }
+    const std::vector<Expression*> & getArgList() const{
+        return argumentList;
+    }
+
+private:
+    std::vector<Expression*> argumentList;
+};
+
+class IdExpression : public  Expression{
+public:
+    IdExpression(std::string s){
+        value = s;
+    }
+    virtual void accept( Visitor* v ) const override { assert( v != 0 ); v->visit( this ); }
+    std::string getId() const  {
+        return value;
+    }
+private:
+    std::string value;
+};
+
+
+class CallExpression: public Expression{
+public:
+    CallExpression( char* str,ArgumentList* list) :argumentsPtr(list), identifier(str){}
+
+    virtual void accept( Visitor* v ) const override { assert( v != 0 ); v->visit( this ); }
+    const ArgumentList* getArgs() const {
+        return argumentsPtr.get();
+    }
+    std::string getId() const{
+        return identifier;
+    }
+private:
+    std::string identifier;
+    std::unique_ptr<ArgumentList> argumentsPtr;
+};
+
+/*
+class UnaryExpression : public Expression {
 public:
     ThisExpression() : value( -1 ) {}
 
@@ -75,6 +124,6 @@ private:
     const int value;
 };
 
-typedef std::shared_ptr<ThisExpression > PThisExpression ;
+*/
 
 
