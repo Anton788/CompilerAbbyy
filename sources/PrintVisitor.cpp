@@ -30,6 +30,25 @@ void SyntaxTreePrinter::visit(const ExpressionNewInt* e) {
     content.push_back( top + "->" + expr + ";" );
 }
 
+void SyntaxTreePrinter::visit(const ThisExpression* e) {
+    int topIndex = globalIndex++;
+    top = to_string( topIndex );
+    content.push_back( top + "[label=ThisExpr];" );
+    int numIndex = globalIndex++;
+    string numStr = to_string( numIndex );
+    content.push_back( numStr + "[label=" + "This" + "];" );
+    content.push_back( top + "->" + numStr + ";" );
+}
+
+void SyntaxTreePrinter::visit(const ExpressionNegation* e) {
+    e->getExpr()->accept(this);
+    string expr = top;
+    int topIndex = globalIndex++;
+    top = to_string( topIndex );
+    content.push_back( top + "[label=ExprNeg];" );
+    content.push_back( top + "->" + expr + ";" );
+}
+
 void SyntaxTreePrinter::visit(const ExpressionNewId* e) {
     e->getExpr()->accept(this);
     string expr = top;
@@ -128,6 +147,9 @@ void SyntaxTreePrinter::visit( const IdExpression* e){
     content.push_back( top + "->" + numStr + ";" );
 }
 void SyntaxTreePrinter::visit( const CallExpression* e) {
+    e->getExpr()->accept(this);
+    std::string my_class = top;
+
     std::vector<std::string> namesChild;
     for (auto value : e->getArgs()->getArgList()) {
         value->accept(this);
@@ -135,14 +157,72 @@ void SyntaxTreePrinter::visit( const CallExpression* e) {
     }
     int topIndex = globalIndex++;
     top = to_string(topIndex);
-    content.push_back(top + "[label=Call ordering=out];");
+    std::string arguments = top;
+    content.push_back(top + "[label=Arguments " + "ordering=out];");
 
-    int opIndex = globalIndex++;
-    string opStr = to_string(opIndex);
     for (auto value :namesChild) {
         content.push_back(top + "->" + value + ";");
     }
 
+    topIndex = globalIndex++;
+    top = to_string(topIndex);
+    std::string id = top;
+    content.push_back(top + "[label=" + e->getId() + " ];");
+
+
+    topIndex = globalIndex++;
+    top = to_string(topIndex);
+    content.push_back(top + "[label=CallExpr" + " ];");
+    content.push_back(top + "->" + my_class + ";");
+    content.push_back(top + "->" + id + ";");
+    content.push_back(top + "->" + arguments + ";");
+
+
+}
+
+void SyntaxTreePrinter::visit( const AssignArrayState* e){
+    e->getIndex()->accept(this);
+    string index = top;
+    e->getValue()->accept(this);
+    string value = top;
+    int topIndex = globalIndex++;
+    top = to_string( topIndex );
+    content.push_back( top + "[label=AssignArrayState];" );
+
+    int numIndex = globalIndex++;
+    string numStr = to_string( numIndex );
+    content.push_back( numStr + "[label=" + e->getArray() + "];" );
+
+    content.push_back( top + "->" + numStr + ";" );
+    content.push_back( top + "->" + index + ";" );
+    content.push_back( top + "->" + value + ";" );
+}
+
+void SyntaxTreePrinter::visit( const AssignState* e){
+    e->getValue()->accept(this);
+    string value = top;
+    int topIndex = globalIndex++;
+    top = to_string( topIndex );
+    content.push_back( top + "[label=AssignState];" );
+
+    int numIndex = globalIndex++;
+    string numStr = to_string( numIndex );
+    content.push_back( numStr + "[label=" + e->getState() + "];" );
+
+    content.push_back( top + "->" + numStr + ";" );
+    content.push_back( top + "->" + value + ";" );
+}
+
+void SyntaxTreePrinter::visit( const WhileState* e){
+    e->getValue()->accept(this);
+    string value = top;
+    e->getState()->accept(this);
+    string state = top;
+    int topIndex = globalIndex++;
+    top = to_string( topIndex );
+    content.push_back( top + "[label=WhileState];" );
+    content.push_back( top + "->" + state + ";" );
+    content.push_back( top + "->" + value + ";" );
 }
 
 string SyntaxTreePrinter::ToString() const

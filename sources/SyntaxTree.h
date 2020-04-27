@@ -7,15 +7,20 @@
 #include <iostream>
 
 
-class Statement {
-public:
-    virtual void accept(Visitor* ) const  = 0;
-};
+using namespace std;
 
 class Expression {
 public:
     virtual void accept( Visitor* ) const = 0;
 };
+
+
+class Statement {
+public:
+    virtual void accept(Visitor* ) const  = 0;
+};
+
+
 
 class NumExpression : public Expression {
 public:
@@ -93,6 +98,7 @@ class IdExpression : public  Expression{
 public:
     IdExpression(std::string s){
         value = s;
+        cout << s;
     }
     virtual void accept( Visitor* v ) const override { assert( v != 0 ); v->visit( this ); }
 
@@ -165,11 +171,21 @@ private:
     std::unique_ptr<Expression> expr;
 };
 
+class ThisExpression:public Expression{
+public:
+    ThisExpression() = default;
+    virtual void accept(Visitor* v) const override{
+        assert( v != 0 );
+        v->visit( this );
+    }
+};
+
 class ExpressionNewId: public Expression{
 public:
     ExpressionNewId(std::string expr_):
     expr(new IdExpression(expr_))
     {
+        cout << expr_;
     }
     virtual void accept(Visitor* v) const override{
         assert( v != 0 );
@@ -182,23 +198,26 @@ private:
     std::unique_ptr<IdExpression> expr;
 };
 
-/*class ExpressionNegation: public Expression{
+class ExpressionNegation: public Expression{
 public:
-    ExpressionNegation(Expression* expr){
-        this->expr = expr;
+    ExpressionNegation(Expression* expr_):
+    expr(expr_){
     }
     virtual void accept(Visitor* v) const override{
         assert( v != 0 );
         v->visit( this );
     }
+    const Expression* getExpr() const {
+        return expr.get();
+    }
 private:
-    Expression* expr;
-};*/
+    std::unique_ptr<Expression> expr;
+};
 
 
 class CallExpression: public Expression{
 public:
-    CallExpression( char* str,ArgumentList* list) :argumentsPtr(list), identifier(str){}
+    CallExpression( char* str, ArgumentList* list, Expression* parent_) :argumentsPtr(list), identifier(str), parent(parent_){}
 
     virtual void accept( Visitor* v ) const override { assert( v != 0 ); v->visit( this ); }
     const ArgumentList* getArgs() const {
@@ -207,11 +226,79 @@ public:
     std::string getId() const{
         return identifier;
     }
+    const Expression* getExpr() const {
+        return parent.get();
+    }
 private:
     std::string identifier;
     std::unique_ptr<ArgumentList> argumentsPtr;
+    std::unique_ptr<Expression> parent;
 };
 
+class AssignArrayState: public Statement {
+public:
+    AssignArrayState( std::string name_array, Expression* index, Expression* value ) :
+    name_array(name_array),
+    index(index),
+    value( value ) {}
+
+    std::string getArray() const { return name_array; }
+
+    const Expression* getIndex() const {
+        return index.get();
+    }
+
+    const Expression* getValue() const {
+        return value.get();
+    }
+
+    virtual void accept( Visitor* v ) const override { assert( v != 0 ); v->visit( this ); }
+
+private:
+    std::string name_array;
+    std::unique_ptr<Expression> index;
+    std::unique_ptr<Expression> value;
+};
+
+class AssignState: public Statement {
+public:
+    AssignState( std::string state, Expression* value) :
+            state(state),
+            value( value ) {}
+
+    std::string getState() const { return state; }
+
+    const Expression* getValue() const {
+        return value.get();
+    }
+
+    virtual void accept( Visitor* v ) const override { assert( v != 0 ); v->visit( this ); }
+
+private:
+    std::string state;
+    std::unique_ptr<Expression> value;
+};
+
+class WhileState: public Statement {
+public:
+    WhileState( Expression* value, Statement* state) :
+            state(state),
+            value( value ) {}
+
+    const Statement* getState() const {
+        return state.get();
+    }
+
+    const Expression* getValue() const {
+        return value.get();
+    }
+
+    virtual void accept( Visitor* v ) const override { assert( v != 0 ); v->visit( this ); }
+
+private:
+    std::unique_ptr<Statement> state;
+    std::unique_ptr<Expression> value;
+};
 /*
 class UnaryExpression : public Expression {
 public:

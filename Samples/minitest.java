@@ -1,1 +1,1 @@
-new key()
+while ( true ) awddw=5+6;

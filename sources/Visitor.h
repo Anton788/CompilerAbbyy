@@ -9,6 +9,11 @@ class ExpressionLength;
 class ExpressionSquare;
 class ExpressionNewInt;
 class ExpressionNewId;
+class ThisExpression;
+class ExpressionNegation;
+class AssignArrayState;
+class AssignState;
+class WhileState;
 
 class Visitor {
 public:
@@ -21,6 +26,11 @@ public:
     virtual void visit (const ExpressionSquare*) = 0;
     virtual void visit (const ExpressionNewInt*) = 0;
     virtual void visit (const ExpressionNewId*) = 0;
-   // virtual void visit( const SquareBracketExpression* ) = 0;
+    virtual void visit (const ThisExpression*) = 0;
+    virtual void visit (const ExpressionNegation*) = 0;
+    virtual void visit (const AssignArrayState*) = 0;
+    virtual void visit (const AssignState*) = 0;
+    virtual void visit (const WhileState*) = 0;
+    // virtual void visit( const SquareBracketExpression* ) = 0;
 
 };
