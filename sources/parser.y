@@ -6,7 +6,7 @@
 
 using namespace std;
 
-int kerror( yyscan_t scanner, Expression*& result, const char* msg )
+int kerror( yyscan_t scanner, Statement*& result, const char* msg )
 {
     cerr << "kerror called: '" << msg << "'" << endl;
     return 0;
@@ -14,8 +14,7 @@ int kerror( yyscan_t scanner, Expression*& result, const char* msg )
 
 %}
 
-%code requires
-{
+%code requires{
 #include <SyntaxTree.h>
 
 #ifndef YY_TYPEDEF_YY_SCANNER_T
@@ -30,15 +29,14 @@ typedef void* yyscan_t;
 %define api.prefix {k}
 %define api.pure
 %param { yyscan_t scanner }
-%parse-param { Expression*& result }
+%parse-param { Statement*& result }
 
 %union {
     int Number;
     char* Identifier;
     Expression* Exp;
     ArgumentList* ExpressionList;
-    ExpressionLength* ExpressionLen;
-
+    Statement* State;
 }
 
 %token IS_EQUAL
@@ -84,8 +82,9 @@ typedef void* yyscan_t;
 %token END 0 "end of file"
 %token NEW
 
-%left IS_EQUAL
+%left ASSIGN
 %left AND
+%left LESS
 %left PLUS MINUS
 %left MUL
 
@@ -105,33 +104,65 @@ typedef void* yyscan_t;
 
 %type <Exp> Expression
 %type <ExpressionList> ExpressionList
+%type <State> Statement
+
 
 %destructor { delete $$; } Expression
 
 %%
 
-Start: Expression[E] { result = $E; }
+Start: Statement[E] { result = $E; }
 ;
 
-Expression: INTEGER[N] { $$ = new NumExpression( $N ); }
-	| ID[N] {$$ = new IdExpression($N);}
+Statement:
+	LBRACE StatementList[S] RBRACE {$$=new ObjState($S);}
+	| IF LBRACKET Expression[I] RBRACKET Statement ELSE Statement[E] {$$=new ConditionState($I, $E); }
+	| WHILE LBRACKET Expression[E] RBRACKET Statement[S] {$$ = new WhileState($E, $S);}
+	|ID[I] ASSIGN Expression[E] DOT_COMMA {$$ = new AssignState($I, $E);}
+	| PRINT LBRACKET Expression[N] RBRACKET DOT_COMMA {$$ =new PrintState($N);}
+	|ID[I] LSQUAREBRACKET Expression[E] RSQUAREBRACKET ASSIGN Expression[L] DOT_COMMA {
+	$$ = new AssignArrayState($I, $E, $L); }
+
+
+StatementList: %empty {$$ = new StatementList(); }
+| Statement[L] StatementList[R] { $$ = new StatementList($L, $R);}
+
+
+
+Expression: Expression[L] MUL Expression[R] { $$ = new BinopExpression( $L, BinopExpression::OC_Mul, $R ); }
+    | Expression[L] PLUS Expression[R] { $$ = new BinopExpression( $L, BinopExpression::OC_Plus, $R ); }
+    | Expression[L] MINUS Expression[R] { $$ = new BinopExpression( $L, BinopExpression::OC_Minus, $R ); }
+    | Expression[L] AND Expression[R] { $$ = new BinopExpression( $L, BinopExpression::OC_And, $R ); }
+    | Expression[L] LESS Expression[R] { $$ = new BinopExpression( $L, BinopExpression::OC_Less, $R ); }
+    | Expression[F] LSQUAREBRACKET Expression[E] RSQUAREBRACKET {$$ = new ExpressionSquare($F, $E);}
+    | Expression[L] DOT LENGTH {$$ = new ExpressionLength( $L);}
+    | Expression[L] DOT ID[I] LBRACKET ExpressionList[E] RBRACKET {
+            $$ = new CallExpression($I, $E, $L);}
+    | INTEGER[N] { $$ = new NumExpression( $N ); }
     | TRUE { $$ = new BoolExpression( true ); }
     | FALSE { $$ = new BoolExpression( false ); }
-    | THIS DOT ID[I] LBRACKET ExpressionList[L] RBRACKET {$$ = new CallExpression($I, $L); }
-    | LBRACKET Expression[N] RBRACKET { $$ = $N;}
-    | Expression[L] PLUS Expression[R] { $$ = new BinopExpression( $L, BinopExpression::OC_Plus, $R ); }
-    | Expression[L] MUL Expression[R] { $$ = new BinopExpression( $L, BinopExpression::OC_Mul, $R ); }
-    | Expression[L] MINUS Expression[R] { $$ = new BinopExpression( $L, BinopExpression::OC_Minus, $R ); }
-    | Expression[L] LESS Expression[R] { $$ = new BinopExpression( $L, BinopExpression::OC_Less, $R ); }
-    | Expression[L] AND Expression[R] { $$ = new BinopExpression( $L, BinopExpression::OC_And, $R ); }
-    | Expression[L] DOT LENGTH {$$ = new ExpressionLength( $L);}
-    | Expression[F] LSQUAREBRACKET Expression[E] RSQUAREBRACKET {$$ = new ExpressionSquare($F, $E);}
+    | ID[N] {$$ = new IdExpression($N);}
+    | THIS {$$ = new ThisExpression(); }
     | NEW INT LSQUAREBRACKET Expression[E] RSQUAREBRACKET {$$ = new ExpressionNewInt($E);}
-    | NEW ID[L] LBRACKET RBRACKET {$$ = new ExpressionNewId($L);}
-    /*| UNARY_NEGATION Expression[E] {$$ = new ExpressionNegation($E);}*/
+    | NEW ID[I] LBRACKET RBRACKET {$$ = new ExpressionNewId($I);}
+    | LBRACKET Expression[N] RBRACKET { $$ = $N;}
+    | UNARY_NEGATION Expression[E] {$$ = new ExpressionNegation($E);}
 ;
 
-ExpressionList:
-| Expression[L] COMMA ExpressionList[R]{$$ = new ArgumentList($L, $R);}
+/*Expressions:
+    %empty {
+        $$ = Expressions();
+    }
+    | Expression {
+        $$ = Expressions();
+        $$.push_back(std::move($1));
+    }
+    | Expressions "," Expression {
+        $1.push_back(std::move($3));
+        $$ = std::move($1);
+    }
+;*/
+
+ExpressionList: Expression[L] COMMA ExpressionList[R]{$$ = new ArgumentList($L, $R);}
 | Expression[N] {$$ = new ArgumentList($N);}
 | %empty {$$ = new ArgumentList();}
