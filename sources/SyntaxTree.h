@@ -4,6 +4,13 @@
 #include <Visitor.h>
 #include <assert.h>
 #include <vector>
+#include <iostream>
+
+
+class Statement {
+public:
+    virtual void accept(Visitor* ) const  = 0;
+};
 
 class Expression {
 public:
@@ -88,12 +95,105 @@ public:
         value = s;
     }
     virtual void accept( Visitor* v ) const override { assert( v != 0 ); v->visit( this ); }
+
     std::string getId() const  {
         return value;
     }
 private:
     std::string value;
 };
+
+class ExpressionLength : public Expression {
+public:
+    ExpressionLength(Expression* expr_):
+    expr(expr_)
+    {
+        //this->length = expr.length();
+    }
+    virtual void accept(Visitor* v) const override{
+        assert( v != 0 );
+        v->visit( this );
+    }
+/*    int getLength(){
+        return length;
+    }*/
+    const Expression* getExpr() const{
+        return expr.get();
+    }
+private:
+    std::unique_ptr<Expression> expr;
+    int length;
+};
+
+class ExpressionNewInt: public Expression{
+public:
+    ExpressionNewInt(Expression* expr_):
+    expr(expr_)
+    {}
+    virtual void accept(Visitor* v) const override{
+        assert( v != 0 );
+        v->visit( this );
+    }
+    const Expression* getExpr() const {
+        return expr.get();
+    }
+private:
+    std::unique_ptr<Expression> expr;
+};
+
+class ExpressionSquare: public Expression{
+public:
+    ExpressionSquare(Expression* parent_, Expression* expr_):
+    parent_expr(parent_),
+    expr(expr_)
+    {}
+    virtual void accept(Visitor* v) const override{
+        assert( v != 0 );
+        v->visit( this );
+    }
+
+    const Expression* getParent() const {
+        return parent_expr.get();
+    }
+
+    const Expression* getIndex() const {
+        return expr.get();
+    }
+
+private:
+    std::unique_ptr<Expression> parent_expr;
+    std::unique_ptr<Expression> expr;
+};
+
+class ExpressionNewId: public Expression{
+public:
+    ExpressionNewId(std::string expr_):
+    expr(new IdExpression(expr_))
+    {
+    }
+    virtual void accept(Visitor* v) const override{
+        assert( v != 0 );
+        v->visit( this );
+    }
+    const Expression* getExpr() const {
+        return expr.get();
+    }
+private:
+    std::unique_ptr<IdExpression> expr;
+};
+
+/*class ExpressionNegation: public Expression{
+public:
+    ExpressionNegation(Expression* expr){
+        this->expr = expr;
+    }
+    virtual void accept(Visitor* v) const override{
+        assert( v != 0 );
+        v->visit( this );
+    }
+private:
+    Expression* expr;
+};*/
 
 
 class CallExpression: public Expression{

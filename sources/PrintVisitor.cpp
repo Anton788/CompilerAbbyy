@@ -21,6 +21,51 @@ void SyntaxTreePrinter::visit( const NumExpression* e )
     content.push_back( top + "->" + numStr + ";" );
 }
 
+void SyntaxTreePrinter::visit(const ExpressionNewInt* e) {
+    e->getExpr()->accept(this);
+    string expr = top;
+    int topIndex = globalIndex++;
+    top = to_string( topIndex );
+    content.push_back( top + "[label=ExprNewInt];" );
+    content.push_back( top + "->" + expr + ";" );
+}
+
+void SyntaxTreePrinter::visit(const ExpressionNewId* e) {
+    e->getExpr()->accept(this);
+    string expr = top;
+    int topIndex = globalIndex++;
+    top = to_string( topIndex );
+    content.push_back( top + "[label=ExprNewId];" );
+    content.push_back( top + "->" + expr + ";" );
+}
+
+
+void SyntaxTreePrinter::visit(const ExpressionSquare* e) {
+    e->getParent()->accept(this);
+    string parent = top;
+    e->getIndex()->accept(this);
+    string index = top;
+    int topIndex = globalIndex++;
+    top = to_string( topIndex );
+    content.push_back( top + "[label=SquareExp];" );
+    content.push_back( top + "->" + parent + ";" );
+    content.push_back(top + "->" + index + ";");
+}
+
+void SyntaxTreePrinter::visit(const ExpressionLength* e){
+    e->getExpr()->accept(this);
+    string branch = top;
+    int topIndex = globalIndex++;
+    top = to_string( topIndex );
+    content.push_back( top + "[label=LengthExp];" );
+
+    int numIndex = globalIndex++;
+    string numStr = to_string( numIndex );
+    content.push_back( numStr + "[label=" + "Length" + " color=blue " + "];" );
+    content.push_back( top + "->" + numStr + ";" );
+    content.push_back(top + "->" + branch + ";");
+}
+
 void SyntaxTreePrinter::visit( const BinopExpression* e )
 {
     e->Left()->accept( this );
@@ -35,8 +80,22 @@ void SyntaxTreePrinter::visit( const BinopExpression* e )
 
     int opIndex = globalIndex++;
     string opStr = to_string( opIndex );
-    string opCode = e->OpCode() == BinopExpression::OC_Plus ? "PLUS" : "MUL";
-
+    string opCode;
+    if ( e->OpCode() == BinopExpression::OC_Plus){
+        opCode = "PLUS";
+    }
+    if ( e->OpCode() == BinopExpression::OC_Mul){
+        opCode = "MUL";
+    }
+    if (e->OpCode() == BinopExpression::OC_And){
+        opCode = "AND";
+    }
+    if (e->OpCode() == BinopExpression::OC_Minus){
+        opCode="MINUS";
+    }
+    if (e->OpCode() == BinopExpression::OC_Less) {
+        opCode = "LESS";
+    }
     content.push_back( opStr + "[label=" + opCode + " color=blue];" );
 
     content.push_back( top + "->" + left + ";" );

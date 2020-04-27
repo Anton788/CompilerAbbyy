@@ -9,6 +9,10 @@ public:
     virtual void visit( const BoolExpression* ) ;
     virtual void visit( const IdExpression* );
     virtual void visit( const CallExpression* );
+    virtual void  visit (const ExpressionLength* );
+    virtual void  visit(const ExpressionSquare*);
+    virtual void visit(const ExpressionNewInt*);
+    virtual void visit (const ExpressionNewId*);
 
     std::string ToString() const;
 

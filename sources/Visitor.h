@@ -5,6 +5,10 @@ class NumExpression;
 class BoolExpression;
 class IdExpression;
 class CallExpression;
+class ExpressionLength;
+class ExpressionSquare;
+class ExpressionNewInt;
+class ExpressionNewId;
 
 class Visitor {
 public:
@@ -13,7 +17,10 @@ public:
     virtual void visit( const BoolExpression* ) = 0;
     virtual void visit( const IdExpression* ) = 0;
     virtual void visit( const CallExpression* ) = 0;
+    virtual void visit (const ExpressionLength* ) = 0;
+    virtual void visit (const ExpressionSquare*) = 0;
+    virtual void visit (const ExpressionNewInt*) = 0;
+    virtual void visit (const ExpressionNewId*) = 0;
    // virtual void visit( const SquareBracketExpression* ) = 0;
-
 
 };
