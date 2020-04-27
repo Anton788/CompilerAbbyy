@@ -37,6 +37,8 @@ typedef void* yyscan_t;
     char* Identifier;
     Expression* Exp;
     ArgumentList* ExpressionList;
+    ExpressionLength* ExpressionLen;
+
 }
 
 %token IS_EQUAL
@@ -122,6 +124,11 @@ Expression: INTEGER[N] { $$ = new NumExpression( $N ); }
     | Expression[L] MINUS Expression[R] { $$ = new BinopExpression( $L, BinopExpression::OC_Minus, $R ); }
     | Expression[L] LESS Expression[R] { $$ = new BinopExpression( $L, BinopExpression::OC_Less, $R ); }
     | Expression[L] AND Expression[R] { $$ = new BinopExpression( $L, BinopExpression::OC_And, $R ); }
+    | Expression[L] DOT LENGTH {$$ = new ExpressionLength( $L);}
+    | Expression[F] LSQUAREBRACKET Expression[E] RSQUAREBRACKET {$$ = new ExpressionSquare($F, $E);}
+    | NEW INT LSQUAREBRACKET Expression[E] RSQUAREBRACKET {$$ = new ExpressionNewInt($E);}
+    | NEW ID[L] LBRACKET RBRACKET {$$ = new ExpressionNewId($L);}
+    /*| UNARY_NEGATION Expression[E] {$$ = new ExpressionNegation($E);}*/
 ;
 
 ExpressionList:

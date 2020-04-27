@@ -1,1 +1,1 @@
-this.bla(bla+la, na)
+new key()
