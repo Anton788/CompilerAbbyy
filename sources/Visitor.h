@@ -14,6 +14,8 @@ class ExpressionNegation;
 class AssignArrayState;
 class AssignState;
 class WhileState;
+class ObjState;
+
 
 class Visitor {
 public:
@@ -31,6 +33,7 @@ public:
     virtual void visit (const AssignArrayState*) = 0;
     virtual void visit (const AssignState*) = 0;
     virtual void visit (const WhileState*) = 0;
+    virtual void visit (const ObjState*) = 0;
     // virtual void visit( const SquareBracketExpression* ) = 0;
 
 };

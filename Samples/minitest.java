@@ -1,1 +1,1 @@
-classes.methofsdfss(5+5*3)
+{jk=5*5; while(true) { i = i + 5;}}

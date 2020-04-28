@@ -225,6 +225,32 @@ void SyntaxTreePrinter::visit( const WhileState* e){
     content.push_back( top + "->" + value + ";" );
 }
 
+
+void SyntaxTreePrinter::visit( const ObjState* e) {
+    //e->accept(this);
+    std::string my_class = top;
+
+    std::vector<std::string> namesChild;
+    for (auto value : e->getList()->getStList()) {
+        value->accept(this);
+        namesChild.push_back(top);
+    }
+    int topIndex = globalIndex++;
+    top = to_string(topIndex);
+    std::string arguments = top;
+    content.push_back(top + "[label=Arguments " + "ordering=out];");
+
+    for (auto value :namesChild) {
+        content.push_back(top + "->" + value + ";");
+    }
+    topIndex = globalIndex++;
+    top = to_string(topIndex);
+    content.push_back(top + "[label=ObjState" + " ];");
+    content.push_back(top + "->" + arguments + ";");
+}
+
+
+
 string SyntaxTreePrinter::ToString() const
 {
     stringstream ss;
