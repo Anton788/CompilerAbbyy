@@ -114,20 +114,20 @@ typedef void* yyscan_t;
 Start: Statement[E] { result = $E; }
 ;
 
-Statement:
-	LBRACE StatementList[S] RBRACE {$$=new ObjState($S);}
+Statement: Expression
+/*
+LBRACE StatementList[S] RBRACE {$$=new ObjState($S);}
 	| IF LBRACKET Expression[I] RBRACKET Statement ELSE Statement[E] {$$=new ConditionState($I, $E); }
 	| WHILE LBRACKET Expression[E] RBRACKET Statement[S] {$$ = new WhileState($E, $S);}
-	|ID[I] ASSIGN Expression[E] DOT_COMMA {$$ = new AssignState($I, $E);}
+	| ID[I] ASSIGN Expression[E] DOT_COMMA {$$ = new AssignState($I, $E);}
 	| PRINT LBRACKET Expression[N] RBRACKET DOT_COMMA {$$ =new PrintState($N);}
-	|ID[I] LSQUAREBRACKET Expression[E] RSQUAREBRACKET ASSIGN Expression[L] DOT_COMMA {
-	$$ = new AssignArrayState($I, $E, $L); }
+	| ID[I] LSQUAREBRACKET Expression[E] RSQUAREBRACKET ASSIGN Expression[L] DOT_COMMA { $$ = new AssignArrayState($I, $E, $L); }
 
 
 StatementList: %empty {$$ = new StatementList(); }
 | Statement[L] StatementList[R] { $$ = new StatementList($L, $R);}
 
-
+*/
 
 Expression: Expression[L] MUL Expression[R] { $$ = new BinopExpression( $L, BinopExpression::OC_Mul, $R ); }
     | Expression[L] PLUS Expression[R] { $$ = new BinopExpression( $L, BinopExpression::OC_Plus, $R ); }
