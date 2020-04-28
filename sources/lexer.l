@@ -212,7 +212,12 @@ L_RBRACE "}"
 }
 
 {L_ID} {
-    yylval->Identifier = yytext;
+    char *str = yytext;
+    char* ch = new char[yyleng]();
+    for (int i = 0; i < yyleng; i++){
+        ch[i] = str[i];
+    }
+    yylval->Identifier = ch;
     cout << "ID ";
     return ID;
 }

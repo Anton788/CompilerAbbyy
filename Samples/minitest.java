@@ -1,1 +1,1 @@
-while ( true ) awddw=5+6;
+classes.methofsdfss(5+5*3)
