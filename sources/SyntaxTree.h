@@ -299,18 +299,32 @@ private:
     std::unique_ptr<Statement> state;
     std::unique_ptr<Expression> value;
 };
-/*
-class UnaryExpression : public Expression {
+
+
+
+
+class StatementList{
 public:
-    ThisExpression() : value( -1 ) {}
+    StatementList(){}
+    StatementList(Statement* e, StatementList* list){
+        list->statementList.swap(statementList);
+        statementList.insert(statementList.begin(), e);
+    }
+    const std::vector<Statement*> & getStList() const{
+        return statementList;
+    }
 
-    int Value() const { return value; }
-
-    virtual void accept( Visitor* v ) const override { assert( v != 0 ); v->visit( this ); }
 private:
-    const int value;
+    std::vector<Statement*> statementList;
 };
 
-*/
-
-
+class ObjState: public Statement{
+    public:
+    ObjState( StatementList* list) :statementsPtr(list) {}
+        virtual void accept( Visitor* v ) const override { assert( v != 0 ); v->visit( this ); }
+        const StatementList* getList() const {
+            return statementsPtr.get();
+        }
+    private:
+        std::unique_ptr<StatementList> statementsPtr;
+};
