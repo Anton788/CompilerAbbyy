@@ -70,18 +70,21 @@ int main( int argc, char* argv[] )
     }
 
     int status = 0;
+    ofstream fout;
+    fout.open("out.txt");
+
     if( cmd->second == C_Calc ) {
-        MethodDeclaration* result = 0;
+        Goal* result = 0;
         if( kparse( lexer, result ) ) {
             status = -13;
         } else {
             SyntaxTreePrinter v;
             result->accept(&v);
-            cout<<v.ToString()<<endl;
+            fout<<v.ToString()<<endl;
         }
         delete result;
     }
-
+    fout.close();
     k_delete_buffer( lexerState, lexer );
     klex_destroy( lexer );
 

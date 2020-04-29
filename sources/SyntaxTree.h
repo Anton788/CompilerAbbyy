@@ -33,6 +33,11 @@ class MDeclaration{
 public:
     virtual void accept(Visitor *) const = 0;
 };
+
+class CDeclaration{
+public: virtual  void accept(Visitor *) const = 0;
+};
+
 class NumExpression : public Expression {
 public:
     NumExpression(int _value) : value(_value) {}
@@ -472,7 +477,7 @@ public:
 
 class IdType : public Type {
 public:
-    IdType(IdExpression *exp) : value(exp) {
+    IdType(std::string id_) : value(new IdExpression(id_)) {
     }
 
     virtual void accept(Visitor *v) const override {
@@ -534,21 +539,38 @@ class MethodList {
 public:
     MethodList() {}
 
-    MethodList(Type *e, char* str) {
-        argumentList.push_back(std::make_pair(e, str));
+    MethodList(Type *t, char* str) {
+        argumentList.push_back(std::make_pair(t, new IdExpression(str)));
     }
 
     MethodList(Type *t, char* str, MethodList *list) {
         list->argumentList.swap(argumentList);
-        argumentList.insert(argumentList.begin(), std::make_pair(t, str));
+        argumentList.insert(argumentList.begin(), std::make_pair(t, new IdExpression(str)));
     }
 
-    const std::vector<std::pair<Type*, char*> > &getArgList() const {
+    const std::vector<std::pair<Type*, IdExpression*> > &getArgList() const {
         return argumentList;
     }
 
 private:
-    std::vector<std::pair<Type*, char*> > argumentList;
+    std::vector<std::pair<Type*, IdExpression*> > argumentList;
+};
+
+class MethodDeclarationClass {
+public:
+    MethodDeclarationClass() {}
+
+    MethodDeclarationClass(MethodDeclaration *e, MethodDeclarationClass *list) {
+        list->argumentList.swap(argumentList);
+        argumentList.insert(argumentList.begin(), e);
+    }
+
+    const std::vector<MethodDeclaration *> &getList() const {
+        return argumentList;
+    }
+
+private:
+    std::vector<MethodDeclaration *> argumentList;
 };
 
 class MethodBody: MDeclaration{
@@ -581,7 +603,7 @@ class MethodBody: MDeclaration{
 class MethodDeclaration: MDeclaration{
 public:
     MethodDeclaration(Type * t, char* str, MethodList* list_, MethodBody* body_) :
-            typePtr(t), id(str), list(list_), body(body_) {}
+            typePtr(t), id(new IdExpression(str)), list(list_), body(body_) {}
 
     virtual void accept(Visitor *v) const override {
         assert(v != 0);
@@ -600,12 +622,112 @@ public:
         return body.get();
     }
 
-    const std::string getID() const {
-        return id;
+    const Expression* getID() const {
+        return id.get();
     }
 private:
-    std::string id;
+    std::unique_ptr<Expression> id;
     std::unique_ptr<Type> typePtr;
     std::unique_ptr<MethodList> list;
     std::unique_ptr<MethodBody> body ;
 };
+
+class ClassDeclaration: CDeclaration{
+public:
+    ClassDeclaration(VarDeclarationList * vList, MethodDeclarationClass * mList, char* id, char* id_extends) :
+            varDList(vList), methodList(mList), classname(new IdExpression(id)), id_ext(new IdExpression(id_extends)) {}
+
+    ClassDeclaration(VarDeclarationList * vList, MethodDeclarationClass * mList, char* id) :
+            varDList(vList), methodList(mList), classname(new IdExpression(id)) {}
+
+    virtual void accept(Visitor *v) const override {
+        assert(v != 0);
+        v->visit(this);
+    }
+
+    const VarDeclarationList *getVarList() const {
+        return varDList.get();
+    }
+
+    const MethodDeclarationClass* getMethodList() const {
+        return methodList.get();
+    }
+
+    const Expression* getClassName() const {
+        return classname.get();
+    }
+    const Expression* getExtendsName() const {
+                return id_ext.get();
+    }
+private:
+    std::unique_ptr<VarDeclarationList> varDList;
+    std::unique_ptr< MethodDeclarationClass > methodList;
+    std::unique_ptr<Expression> classname;
+    std::unique_ptr<Expression> id_ext = nullptr;
+};
+
+class ClassDeclarations {
+public:
+    ClassDeclarations() {}
+
+    ClassDeclarations(ClassDeclaration *e,ClassDeclarations *list) {
+        list->argumentList.swap(argumentList);
+        argumentList.insert(argumentList.begin(), e);
+    }
+
+    const std::vector<ClassDeclaration *> &getArgList() const {
+        return argumentList;
+    }
+
+private:
+    std::vector<ClassDeclaration *> argumentList;
+};
+
+class MainClass{
+public:
+    MainClass(char * name_, char* name_2, Statement* e) :
+            name(new IdExpression(name_)), id_(new IdExpression(name_2)), statement(e) {}
+
+     void accept(Visitor *v) const {
+        assert(v != 0);
+        v->visit(this);
+    }
+
+    const IdExpression* getId() const {
+        return id_.get();
+    }
+    const IdExpression* getName() const {
+        return name.get();
+    }
+    const Statement* getStatement() const {
+        return statement.get();
+    }
+
+private:
+    std::unique_ptr<IdExpression> name;
+    std::unique_ptr<IdExpression> id_;
+    std::unique_ptr<Statement> statement;
+};
+
+
+class Goal{
+public:
+    Goal(MainClass* main_class, ClassDeclarations* e) :
+            class_(main_class), class_list(e) {}
+
+    void accept(Visitor *v) const {
+        assert(v != 0);
+        v->visit(this);
+    }
+    const MainClass* getMainClass() const {
+        return class_.get();
+    }
+    const ClassDeclarations* getClassList() const {
+        return class_list.get();
+    }
+
+private:
+    std::unique_ptr<MainClass> class_;
+    std::unique_ptr<ClassDeclarations> class_list;
+};
+
