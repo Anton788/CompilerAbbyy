@@ -20,6 +20,10 @@ public:
     virtual void accept(Visitor* ) const  = 0;
 };
 
+class Type {
+public:
+    virtual void accept( Visitor* ) const = 0;
+};
 
 
 class NumExpression : public Expression {
@@ -327,4 +331,76 @@ class ObjState: public Statement{
         }
     private:
         std::unique_ptr<StatementList> statementsPtr;
+};
+
+class PrintState: public Statement {
+public:
+    PrintState( Expression* value) :
+    value( value ) {}
+
+    const Expression* getValue() const {
+        return value.get();
+    }
+
+    virtual void accept( Visitor* v ) const override { assert( v != 0 ); v->visit( this ); }
+
+private:
+    std::unique_ptr<Expression> value;
+};
+
+class ConditionState: public Statement {
+public:
+    ConditionState( Expression* value, Statement* StateIF, Statement* StateElse) :
+            state_if(StateIF),
+            state_else(StateElse),
+            value( value ) {}
+
+    const Statement* getStateIf() const {
+        return state_if.get();
+    }
+
+    const Statement* getStateElse() const {
+        return state_else.get();
+    }
+
+    const Expression* getValue() const {
+        return value.get();
+    }
+
+    virtual void accept( Visitor* v ) const override { assert( v != 0 ); v->visit( this ); }
+
+private:
+    std::unique_ptr<Statement> state_if;
+    std::unique_ptr<Statement> state_else;
+    std::unique_ptr<Expression> value;
+};
+
+class ArrayIntType: public Type {
+public:
+    ArrayIntType() = default;
+    virtual void accept( Visitor* v ) const override { assert( v != 0 ); v->visit( this ); }
+};
+
+class BoolType: public Type {
+public:
+    BoolType() = default;
+    virtual void accept( Visitor* v ) const override { assert( v != 0 ); v->visit( this ); }
+};
+
+class IntType: public Type {
+public:
+    IntType() = default;
+    virtual void accept( Visitor* v ) const override { assert( v != 0 ); v->visit( this ); }
+};
+
+class IdType: public Type {
+public:
+    IdType(IdExpression* exp): value(exp){
+    }
+    virtual void accept( Visitor* v ) const override { assert( v != 0 ); v->visit( this ); }
+    const Expression* getValue() const {
+        return value.get();
+    }
+private:
+    std::unique_ptr<Expression> value;
 };

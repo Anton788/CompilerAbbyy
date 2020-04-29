@@ -19,9 +19,12 @@ public:
     virtual void visit (const AssignState*);
     virtual void visit (const WhileState*);
     virtual void visit (const ObjState*);
-
-
-
+    virtual void visit (const PrintState*);
+    virtual void visit (const ConditionState*);
+    virtual void visit (const ArrayIntType*);
+    virtual void visit (const BoolType*);
+    virtual void visit (const IntType*);
+    virtual void visit (const IdType*);
     std::string ToString() const;
 
 private:

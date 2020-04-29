@@ -1,1 +1,1 @@
-{jk=5*5; while(true) { i = i + 5;}}
+if(a<1){System.out.println(5+8);} else {a = 1;}

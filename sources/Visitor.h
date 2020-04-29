@@ -15,7 +15,12 @@ class AssignArrayState;
 class AssignState;
 class WhileState;
 class ObjState;
-
+class PrintState;
+class ConditionState;
+class ArrayIntType;
+class BoolType;
+class IntType;
+class IdType;
 
 class Visitor {
 public:
@@ -35,5 +40,11 @@ public:
     virtual void visit (const WhileState*) = 0;
     virtual void visit (const ObjState*) = 0;
     // virtual void visit( const SquareBracketExpression* ) = 0;
+    virtual void visit (const PrintState*) = 0;
+    virtual void visit (const ConditionState*) = 0;
+    virtual void visit (const ArrayIntType*) = 0;
+    virtual void visit (const BoolType*) = 0;
+    virtual void visit (const IntType*) = 0;
+    virtual void visit (const IdType*) = 0;
 
 };

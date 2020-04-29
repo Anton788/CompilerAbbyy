@@ -249,6 +249,14 @@ void SyntaxTreePrinter::visit( const ObjState* e) {
     content.push_back(top + "->" + arguments + ";");
 }
 
+void SyntaxTreePrinter::visit( const PrintState* e){
+    e->getValue()->accept(this);
+    string value = top;
+    int topIndex = globalIndex++;
+    top = to_string( topIndex );
+    content.push_back( top + "[label=PrintState];" );
+    content.push_back( top + "->" + value + ";" );
+}
 
 
 string SyntaxTreePrinter::ToString() const
@@ -259,4 +267,47 @@ string SyntaxTreePrinter::ToString() const
     ss << "}";
 
     return ss.str();
+}
+
+
+void SyntaxTreePrinter::visit( const ConditionState* e){
+    e->getStateIf()->accept(this);
+    string state_if = top;
+    e->getStateElse()->accept(this);
+    string state_else = top;
+    e->getValue()->accept(this);
+    string value = top;
+    int topIndex = globalIndex++;
+    top = to_string( topIndex );
+    content.push_back( top + "[label=ConditionState];" );
+    content.push_back( top + "->" + value + ";" );
+    content.push_back( top + "->" + state_if + ";" );
+    content.push_back( top + "->" + state_else + ";" );
+}
+
+void SyntaxTreePrinter::visit( const ArrayIntType* e){
+    int topIndex = globalIndex++;
+    top = to_string( topIndex );
+    content.push_back( top + "[label=ArrayIntType];" );
+}
+
+void SyntaxTreePrinter::visit( const BoolType* e){
+    int topIndex = globalIndex++;
+    top = to_string( topIndex );
+    content.push_back( top + "[label=BoolType];" );
+}
+
+void SyntaxTreePrinter::visit( const IntType* e){
+    int topIndex = globalIndex++;
+    top = to_string( topIndex );
+    content.push_back( top + "[label=IntType];" );
+}
+
+void SyntaxTreePrinter::visit( const IdType* e){
+    e->getValue()->accept(this);
+    string value = top;
+    int topIndex = globalIndex++;
+    top = to_string( topIndex );
+    content.push_back( top + "[label=IntType];" );
+    content.push_back( top + "->" + value + ";" );
 }

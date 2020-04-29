@@ -38,6 +38,7 @@ typedef void* yyscan_t;
     ArgumentList* ExpressionList;
     Statement* State;
     StatementList* StateList;
+    Type* Typ;
 }
 
 %token IS_EQUAL
@@ -107,7 +108,7 @@ typedef void* yyscan_t;
 %type <ExpressionList> ExpressionList
 %type <State> Statement
 %type <StateList> StatementList
-
+%type <Typ> Type
 
 %destructor { delete $$; } Expression
 %destructor { delete $$; } Statement
@@ -116,13 +117,18 @@ typedef void* yyscan_t;
 Start: Statement[E] { result = $E; }
 ;
 
+Type: INT LSQUAREBRACKET RSQUAREBRACKET {$$=new ArrayIntType();}
+     | BOOLEAN {$$=new BoolType();}
+     | INT {$$=new IntType();}
+     | ID[I]  {$$ = new IdType($I);}
+
 Statement: LBRACE StatementList[S] RBRACE {$$=new ObjState($S);}
 	| ID[I] LSQUAREBRACKET Expression[E] RSQUAREBRACKET ASSIGN Expression[L] DOT_COMMA { $$ = new AssignArrayState($I, $E, $L); }
 	| WHILE LBRACKET Expression[E] RBRACKET Statement[S] {$$ = new WhileState($E, $S);}
 	| ID[I] ASSIGN Expression[E] DOT_COMMA {$$ = new AssignState($I, $E);}
-	/*| PRINT LBRACKET Expression[N] RBRACKET DOT_COMMA {$$ =new PrintState($N);}
-	| IF LBRACKET Expression[I] RBRACKET Statement ELSE Statement[E] {$$=new ConditionState($I, $E); }
-*/
+	| PRINT LBRACKET Expression[N] RBRACKET DOT_COMMA {$$ =new PrintState($N);}
+	| IF LBRACKET Expression[I] RBRACKET Statement[N] ELSE Statement[E] {$$=new ConditionState($I, $N, $E); }
+
 StatementList: %empty {$$ = new StatementList(); }
 | Statement[L] StatementList[R] { $$ = new StatementList($L, $R);}
 
