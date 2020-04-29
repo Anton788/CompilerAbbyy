@@ -238,7 +238,7 @@ void SyntaxTreePrinter::visit( const ObjState* e) {
     int topIndex = globalIndex++;
     top = to_string(topIndex);
     std::string arguments = top;
-    content.push_back(top + "[label=Arguments " + "ordering=out];");
+    content.push_back(top + "[label=ArgState " + "ordering=out];");
 
     for (auto value :namesChild) {
         content.push_back(top + "->" + value + ";");
@@ -310,4 +310,101 @@ void SyntaxTreePrinter::visit( const IdType* e){
     top = to_string( topIndex );
     content.push_back( top + "[label=IntType];" );
     content.push_back( top + "->" + value + ";" );
+}
+
+
+
+void SyntaxTreePrinter::visit(const VarDeclaration* e) {
+    e->getType()->accept(this);
+    string type = top;
+
+    int topIndex = globalIndex++;
+    top = to_string( topIndex );
+    content.push_back( top + "[label=VarDec];" );
+
+    int numIndex = globalIndex++;
+    string numStr = to_string( numIndex );
+    content.push_back( numStr + "[label=" + e->getId() + "];" );
+
+    content.push_back( top + "->" + numStr + ";" );
+    content.push_back( top + "->" + type + ";" );
+}
+
+void SyntaxTreePrinter::visit( const MethodBody* e) {
+    e->getExpression()->accept(this);
+    std::string my_class = top;
+
+    std::vector<std::string> varList;
+    for (auto value : e->getVarList()->getVarList()) {
+        value->accept(this);
+        varList.push_back(top);
+    }
+    int topIndex = globalIndex++;
+    top = to_string(topIndex);
+    std::string arguments = top;
+    content.push_back(top + "[label=VarArg " + "ordering=out];");
+
+    for (auto value :varList) {
+        content.push_back(top + "->" + value + ";");
+    }
+
+
+    std::vector<std::string> stList;
+    for (auto value : e->getStatementList()->getStList()) {
+        value->accept(this);
+        stList.push_back(top);
+    }
+    topIndex = globalIndex++;
+    top = to_string(topIndex);
+    std::string argState = top;
+    content.push_back(top + "[label=ArgState " + "ordering=out];");
+
+    for (auto value :stList) {
+        content.push_back(top + "->" + value + ";");
+    }
+
+    topIndex = globalIndex++;
+    top = to_string(topIndex);
+    content.push_back(top + "[label=Body" + " ];");
+    content.push_back(top + "->" + my_class + ";");
+    content.push_back(top + "->" + argState + ";");
+    content.push_back(top + "->" + arguments + ";");
+}
+
+
+void SyntaxTreePrinter::visit( const MethodDeclaration* e) {
+    e->getBody()->accept(this);
+    std::string my_class = top;
+    e->getType()->accept(this);
+    std::string type_top=top;
+
+    std::vector<std::string> Args;
+    for (auto value : e->getMethodList()->getArgList()) {
+        value.first->accept(this);
+        Args.push_back(top);
+        //value.second
+
+    }
+    int topIndex = globalIndex++;
+    top = to_string(topIndex);
+    std::string arguments = top;
+    content.push_back(top + "[label=MetArg " + "ordering=out];");
+
+    for (auto value :Args) {
+        content.push_back(top + "->" + value + ";");
+    }
+
+    topIndex = globalIndex++;
+    top = to_string(topIndex);
+    std::string id = top;
+    content.push_back(top + "[label=" + e->getID()+ " ];");
+
+
+    topIndex = globalIndex++;
+    top = to_string(topIndex);
+    content.push_back(top + "[label=MetDecl" + " ];");
+    content.push_back(top + "->" + my_class + ";");
+    content.push_back(top + "->" + id + ";");
+    content.push_back(top + "->" + type_top + ";");
+    content.push_back(top + "->" + arguments + ";");
 }

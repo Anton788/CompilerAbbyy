@@ -6,7 +6,7 @@
 
 using namespace std;
 
-int kerror( yyscan_t scanner, Statement*& result, const char* msg )
+int kerror( yyscan_t scanner, MethodDeclaration*& result, const char* msg )
 {
     cerr << "kerror called: '" << msg << "'" << endl;
     return 0;
@@ -29,7 +29,7 @@ typedef void* yyscan_t;
 %define api.prefix {k}
 %define api.pure
 %param { yyscan_t scanner }
-%parse-param { Statement*& result }
+%parse-param { MethodDeclaration*& result }
 
 %union {
     int Number;
@@ -39,6 +39,11 @@ typedef void* yyscan_t;
     Statement* State;
     StatementList* StateList;
     Type* Typ;
+    VDeclaration* VarD;
+    VarDeclarationList* VarDList;
+    MethodList* MArg;
+    MethodBody* MBode;
+    MethodDeclaration* MDec;
 }
 
 %token IS_EQUAL
@@ -109,13 +114,33 @@ typedef void* yyscan_t;
 %type <State> Statement
 %type <StateList> StatementList
 %type <Typ> Type
+%type <VarD> VDeclaration
+%type <VarDList> Var_declarationList
+%type <MArg> MethodList
+%type <MBode> MethodBody
+%type <MDec> MethodDeclaration
+
+
 
 %destructor { delete $$; } Expression
 %destructor { delete $$; } Statement
 %%
 
-Start: Statement[E] { result = $E; }
+Start: MethodDeclaration[E] { result = $E; }
 ;
+
+MethodList: Type[T] ID[I] COMMA MethodList[A] {$$ = new MethodList($T, $I, $A);}
+           | Type[T] ID[I] {$$ = new MethodList($T $I);}
+           | %empty {$$ = new MethodList();}
+
+MethodBody: LBRACE Var_declarationList[V] StatementList[S] RETURN Expression[E] DOT_COMMA RBRACE {$$ = new MethodBody($V, $S, $E);}
+
+MethodDeclaration: PUBLIC Type[T] ID[I] LBRACKET MethodList[A] RBRACKET MethodBody[B] {$$ = new MethodDeclaration($T, $I, $A, $B);};
+
+VDeclaration : Type[T] ID[I] DOT_COMMA {$$ = new VarDeclaration($T, $I);}
+
+Var_declarationList  : VDeclaration[V] Var_declarationList[L] { $$ = new VarDeclarationList($V, $L); }
+    |%empty {$$ = new VarDeclarationList(); }
 
 Type: INT LSQUAREBRACKET RSQUAREBRACKET {$$=new ArrayIntType();}
      | BOOLEAN {$$=new BoolType();}

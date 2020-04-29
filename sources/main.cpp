@@ -71,7 +71,7 @@ int main( int argc, char* argv[] )
 
     int status = 0;
     if( cmd->second == C_Calc ) {
-        Statement* result = 0;
+        MethodDeclaration* result = 0;
         if( kparse( lexer, result ) ) {
             status = -13;
         } else {
