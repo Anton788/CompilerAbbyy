@@ -25,6 +25,13 @@ public:
     virtual void visit (const BoolType*);
     virtual void visit (const IntType*);
     virtual void visit (const IdType*);
+    virtual void visit (const VarDeclaration*);
+    virtual void visit (const MethodBody*);
+    virtual void visit (const MethodDeclaration*);
+    virtual void visit (const ClassDeclaration*);
+    virtual void visit (const MainClass*);
+    virtual void visit (const Goal*);
+
     std::string ToString() const;
 
 private:

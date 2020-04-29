@@ -21,6 +21,12 @@ class ArrayIntType;
 class BoolType;
 class IntType;
 class IdType;
+class VarDeclaration;
+class MethodBody;
+class MethodDeclaration;
+class ClassDeclaration;
+class MainClass;
+class Goal;
 
 class Visitor {
 public:
@@ -46,5 +52,12 @@ public:
     virtual void visit (const BoolType*) = 0;
     virtual void visit (const IntType*) = 0;
     virtual void visit (const IdType*) = 0;
+    virtual void visit (const VarDeclaration*) = 0;
+    virtual void visit (const MethodBody*) = 0;
+    virtual void visit (const MethodDeclaration*) = 0;
+    virtual void visit (const ClassDeclaration*) = 0;
+    virtual void visit (const MainClass*) = 0;
+    virtual void visit (const Goal*) = 0;
+
 
 };

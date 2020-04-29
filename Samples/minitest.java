@@ -1,1 +1,5 @@
-if(a<1){System.out.println(5+8);} else {a = 1;}
+class LinkedList{
+    public static void main(String[] a){
+	System.out.println(new LL().Start());
+    }
+}

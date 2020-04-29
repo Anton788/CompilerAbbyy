@@ -6,7 +6,7 @@
 
 using namespace std;
 
-int kerror( yyscan_t scanner, Statement*& result, const char* msg )
+int kerror( yyscan_t scanner, Goal*& result, const char* msg )
 {
     cerr << "kerror called: '" << msg << "'" << endl;
     return 0;
@@ -29,7 +29,7 @@ typedef void* yyscan_t;
 %define api.prefix {k}
 %define api.pure
 %param { yyscan_t scanner }
-%parse-param { Statement*& result }
+%parse-param {Goal*& result }
 
 %union {
     int Number;
@@ -39,6 +39,16 @@ typedef void* yyscan_t;
     Statement* State;
     StatementList* StateList;
     Type* Typ;
+    VDeclaration* VarD;
+    VarDeclarationList* VarDList;
+    MethodList* MArg;
+    MethodBody* MBode;
+    MethodDeclaration* MDec;
+    MethodDeclarationClass* MDClass;
+    ClassDeclaration* ClassD;
+    MainClass* MainCl;
+    ClassDeclarations* ClassList;
+    Goal* Gl;
 }
 
 %token IS_EQUAL
@@ -109,13 +119,51 @@ typedef void* yyscan_t;
 %type <State> Statement
 %type <StateList> StatementList
 %type <Typ> Type
+%type <VarD> VDeclaration
+%type <VarDList> Var_declarationList
+%type <MArg> MethodList
+%type <MBode> MethodBody
+%type <MDec> MethodDeclaration
+%type <MDClass> MethodDeclarationClass
+%type <ClassD> ClassDeclaration
+%type <MainCl> MainClass
+%type <ClassList> ClassDeclarations
+%type <Gl> Goal
+
 
 %destructor { delete $$; } Expression
 %destructor { delete $$; } Statement
 %%
 
-Start: Statement[E] { result = $E; }
-;
+Start: Goal[E] { result = $E; }
+
+
+Goal: MainClass[M] ClassDeclarations[C] END {$$ = new Goal($M, $C);}
+
+ClassDeclarations: %empty {$$ = new ClassDeclarations();}
+    | ClassDeclarations[L] ClassDeclaration[C] { $$ = new ClassDeclarations($C, $L); }
+
+
+MainClass : CLASS ID[I] LBRACE PUBLIC STATIC VOID MAIN LBRACKET STRING LSQUAREBRACKET RSQUAREBRACKET ID[N] RBRACKET LBRACE Statement[S] RBRACE RBRACE{ $$ = new MainClass($I, $N, $S);}
+
+ClassDeclaration: CLASS ID[I] LBRACE Var_declarationList[V] MethodDeclarationClass[M] RBRACE {$$ = new ClassDeclaration($V, $M, $I);}
+	|CLASS ID[I] EXTENDS ID[N] LBRACE Var_declarationList[V] MethodDeclarationClass[M] RBRACE {$$ = new ClassDeclaration($V, $M, $I, $N);}
+
+MethodDeclarationClass:MethodDeclarationClass[L] MethodDeclaration[V]  { $$ = new MethodDeclarationClass($V, $L); }
+                            |%empty {$$ = new MethodDeclarationClass(); }
+
+MethodList: Type[T] ID[I] COMMA MethodList[A] {$$ = new MethodList($T, $I, $A);}
+          | Type[T] ID[I] {$$ = new MethodList($T, $I);}
+           | %empty {$$ = new MethodList();}
+
+MethodBody: LBRACE Var_declarationList[V] StatementList[S] RETURN Expression[E] DOT_COMMA RBRACE {$$ = new MethodBody($V, $S, $E);}
+
+MethodDeclaration: PUBLIC Type[T] ID[I] LBRACKET MethodList[A] RBRACKET MethodBody[B] {$$ = new MethodDeclaration($T, $I, $A, $B);};
+
+VDeclaration : Type[T] ID[I] DOT_COMMA {$$ = new VarDeclaration($T, $I);}
+
+Var_declarationList  : Var_declarationList[L] VDeclaration[V]  { $$ = new VarDeclarationList($V, $L); }
+    |%empty {$$ = new VarDeclarationList(); }
 
 Type: INT LSQUAREBRACKET RSQUAREBRACKET {$$=new ArrayIntType();}
      | BOOLEAN {$$=new BoolType();}
