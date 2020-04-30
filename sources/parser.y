@@ -133,6 +133,18 @@ typedef void* yyscan_t;
 
 %destructor { delete $$; } Expression
 %destructor { delete $$; } Statement
+%destructor { delete $$; } MainClass
+%destructor { delete $$; } MethodDeclaration
+%destructor { delete $$; } MethodDeclarationClass
+%destructor { delete $$; } StatementList
+%destructor { delete $$; } ExpressionList
+%destructor { delete $$; } ClassDeclarations
+%destructor { delete $$; } ClassDeclaration
+%destructor { delete $$; } Type
+%destructor { delete $$; } VDeclaration
+%destructor { delete $$; } Var_declarationList
+%destructor { delete $$; } MethodBody
+%destructor { delete $$; } Goal
 %%
 
 Start: Goal[E] { result = $E; }
