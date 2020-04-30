@@ -262,7 +262,7 @@ private:
 
 class CallExpression : public Expression {
 public:
-    CallExpression(char *str, ArgumentList *list, Expression *parent_) : argumentsPtr(list), identifier(str),
+    CallExpression(char *str, ArgumentList *list, Expression *parent_) : argumentsPtr(list), identifier(new IdExpression(str)),
                                                                          parent(parent_) {}
 
     virtual void accept(Visitor *v) const override {
@@ -274,8 +274,8 @@ public:
         return argumentsPtr.get();
     }
 
-    std::string getId() const {
-        return identifier;
+  const IdExpression* getId() const {
+        return identifier.get();
     }
 
     const Expression *getExpr() const {
@@ -283,7 +283,7 @@ public:
     }
 
 private:
-    std::string identifier;
+    std::unique_ptr<IdExpression> identifier;
     std::unique_ptr<ArgumentList> argumentsPtr;
     std::unique_ptr<Expression> parent;
 };
@@ -291,11 +291,11 @@ private:
 class AssignArrayState : public Statement {
 public:
     AssignArrayState(std::string name_array, Expression *index, Expression *value) :
-            name_array(name_array),
+            name_array(new IdExpression(name_array)),
             index(index),
             value(value) {}
 
-    std::string getArray() const { return name_array; }
+    const Expression* getArray() const { return name_array.get(); }
 
     const Expression *getIndex() const {
         return index.get();
@@ -311,18 +311,18 @@ public:
     }
 
 private:
-    std::string name_array;
+    std::unique_ptr<IdExpression> name_array;
     std::unique_ptr<Expression> index;
     std::unique_ptr<Expression> value;
 };
 
 class AssignState : public Statement {
 public:
-    AssignState(std::string state, Expression *value) :
-            state(state),
+    AssignState(std::string state_, Expression *value) :
+            state(new IdExpression(state_)),
             value(value) {}
 
-    std::string getState() const { return state; }
+    const Expression* getState() const { return state.get(); }
 
     const Expression *getValue() const {
         return value.get();
@@ -334,7 +334,7 @@ public:
     }
 
 private:
-    std::string state;
+    std::unique_ptr<IdExpression> state;
     std::unique_ptr<Expression> value;
 };
 
@@ -515,7 +515,7 @@ private:
 class VarDeclaration : public VDeclaration {
 public:
     VarDeclaration(Type * type, char *str) :
-    typePtr(type), identifier(str) {}
+    typePtr(type), identifier(new IdExpression(str)) {}
 
     virtual void accept(Visitor *v) const override {
         assert(v != 0);
@@ -526,12 +526,12 @@ public:
         return typePtr.get();
     }
 
-    std::string getId() const {
-        return identifier;
+    const Expression* getId() const {
+        return identifier.get();
     }
 private:
     std::unique_ptr<Type> typePtr;
-    std::string identifier;
+    std::unique_ptr<IdExpression> identifier;
 };
 
 
