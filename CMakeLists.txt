@@ -23,3 +23,5 @@ add_executable(
 )
 target_include_directories( Lexer PRIVATE ${CMAKE_BINARY_DIR} )
 target_include_directories( Lexer PRIVATE ${CMAKE_SOURCE_DIR}/sources )
+
+add_subdirectory(Samples)
