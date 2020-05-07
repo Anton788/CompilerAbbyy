@@ -5,7 +5,7 @@
 
 using namespace std;
 
-// static
+// static body - порядок MetArg переименовать в statement list ArgState  и порядок полей
 int SyntaxTreePrinter::globalIndex = 0;
 
 void SyntaxTreePrinter::visit(const NumExpression *e) {
@@ -148,12 +148,13 @@ void SyntaxTreePrinter::visit(const IdExpression *e) {
 }
 
 void SyntaxTreePrinter::visit(const CallExpression *e) {
-    e->getExpr()->accept(this);
-    std::string my_class = top;
+
 
     e->getId()->accept(this);
     std::string my_id = top;
 
+    e->getExpr()->accept(this);
+    std::string my_class = top;
 
     std::vector<std::string> namesChild;
     for (auto value : e->getArgs()->getArgList()) {
@@ -367,9 +368,11 @@ void SyntaxTreePrinter::visit(const MethodBody *e) {
     content.push_back(top + "->" + argState + ";");
     content.push_back(top + "->" + arguments + ";");
 }
-
+/*vararg порядок переставить*/
 
 void SyntaxTreePrinter::visit(const MethodDeclaration *e) {
+    e->getID()->accept(this);
+    std::string id = top;
     e->getBody()->accept(this);
     std::string my_class = top;
     e->getType()->accept(this);
@@ -398,10 +401,8 @@ void SyntaxTreePrinter::visit(const MethodDeclaration *e) {
         content.push_back(top + "->" + value + ";");
     }
 
-    e->getID()->accept(this);
-    std::string id = top;
-    topIndex = globalIndex++;
 
+    topIndex = globalIndex++;
     top = to_string(topIndex);
     content.push_back(top + "[label=MetDecl" + " ];");
     content.push_back(top + "->" + my_class + ";");
