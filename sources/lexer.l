@@ -42,7 +42,7 @@ L_THIS       "this"
 L_TRUE       "true"
 L_FALSE      "false"
 L_STRING     "String"
-L_BOOLEAN    "bool"
+L_BOOLEAN    "boolean"
 L_INT        "int"
 L_DIGIT      [0-9]
 L_LETTER     [a-zA-Z_]
@@ -213,7 +213,7 @@ L_RBRACE "}"
 
 {L_ID} {
     char *str = yytext;
-    char* ch = new char[yyleng]();
+    char* ch = new char[yyleng+1]();
     for (int i = 0; i < yyleng; i++){
         ch[i] = str[i];
     }

@@ -128,7 +128,6 @@ class IdExpression : public Expression {
 public:
     IdExpression(std::string s) {
         value = s;
-        cout << s;
     }
 
     virtual void accept(Visitor *v) const override {
