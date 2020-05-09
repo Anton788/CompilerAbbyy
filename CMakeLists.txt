@@ -18,6 +18,7 @@ add_executable(
         Lexer
         ${CMAKE_SOURCE_DIR}/sources/main.cpp
         ${CMAKE_SOURCE_DIR}/sources/PrintVisitor.cpp
+        ${CMAKE_SOURCE_DIR}/sources/SymbolVisitor.cpp
         ${FLEX_MyLexer_OUTPUTS}
         ${BISON_MyParser_OUTPUTS}
 )

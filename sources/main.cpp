@@ -5,8 +5,10 @@
 #include <SyntaxTree.h>
 #include <Visitor.h>
 #include <PrintVisitor.h>
+#include <SymbolVisitor.h>
 #include <kParser.hpp>
 #include <kLexer.h>
+
 
 using namespace std;
 
@@ -79,7 +81,8 @@ int main( int argc, char* argv[] )
             status = -13;
         } else {
             SyntaxTreePrinter v;
-            result->accept(&v);
+            VisitorSymtableBuilder sv;
+            result->accept(&sv);
             fout<<v.ToString()<<endl;
         }
         delete result;

@@ -23,9 +23,9 @@
             address_table_[name] = "argument_" + std::to_string(curr_arg++);
         }
 
-        void addVar(const VDec& variable) {
-            table_vars_[variable->getIdentifier()->getId()] = variable->getType()->getType();
-            address_table_[variable->getIdentifier()->getId()] = "local_" + variable->getIdentifier()->getId();
+        void addVar(const VarDeclaration* variable) {
+            table_vars_[variable-> getId()->getId()] = variable->getType()->getType();
+            address_table_[variable-> getId()->getId()] = "local_" + variable->getId()->getId();
         }
 
         void addVar(const std::string& var_name, const std::string& type, const int number_of_var = -1) {
@@ -99,9 +99,9 @@
         explicit ClassInfo(const std::string& name): name_(name) { };
         ClassInfo(const std::string& name, const std::string& parent): name_(name), parent_(parent) { };
 
-        void addVar(const ast::VarD& variable) {
-            table_var_[variable->getIdentifier()->getId()] = variable->getType()->getType();
-            address_table_[variable->getIdentifier()->getId()] = arg_num_++;
+        void addVar(const VarDeclaration* variable) {
+            table_var_[variable->getId()->getId()] = variable->getType()->getType();
+            address_table_[variable->getId()->getId()] = arg_num_++;
         }
 
         void addMethod(PMethodInfo& method) {
