@@ -39,7 +39,7 @@ typedef void* yyscan_t;
     Statement* State;
     StatementList* StateList;
     Type* Typ;
-    VDeclaration* VarD;
+    VarDeclaration* VarD;
     VarDeclarationList* VarDList;
     MethodList* MArg;
     MethodBody* MBode;

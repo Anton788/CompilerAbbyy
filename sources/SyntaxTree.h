@@ -23,6 +23,7 @@ public:
 class Type {
 public:
     virtual void accept(Visitor *) const = 0;
+    virtual std::string getType() const = 0;
 };
 
 class VDeclaration {
@@ -452,6 +453,9 @@ public:
         assert(v != 0);
         v->visit(this);
     }
+    virtual std::string getType() const override {
+        return "array";
+    }
 };
 
 class BoolType : public Type {
@@ -462,6 +466,10 @@ public:
         assert(v != 0);
         v->visit(this);
     }
+
+    virtual std::string getType() const override {
+        return "bool";
+    }
 };
 
 class IntType : public Type {
@@ -471,6 +479,10 @@ public:
     virtual void accept(Visitor *v) const override {
         assert(v != 0);
         v->visit(this);
+    }
+
+    virtual std::string getType() const override {
+        return "int";
     }
 };
 
@@ -488,8 +500,12 @@ public:
         return value.get();
     }
 
+    virtual std::string getType() const override {
+        return value.get()->getId();
+    }
+
 private:
-    std::unique_ptr<Expression> value;
+    std::unique_ptr<IdExpression> value;
 };
 
 
@@ -497,17 +513,17 @@ class VarDeclarationList {
 public:
     VarDeclarationList() {}
 
-    VarDeclarationList(VDeclaration *e, VarDeclarationList *list) {
+    VarDeclarationList(VarDeclaration *e, VarDeclarationList *list) {
         list->argumentList.swap(argumentList);
         argumentList.insert(argumentList.begin(), e);
     }
 
-    const std::vector<VDeclaration *> &getVarList() const {
+    const std::vector<VarDeclaration *> &getVarList() const {
         return argumentList;
     }
 
 private:
-    std::vector<VDeclaration *> argumentList;
+    std::vector<VarDeclaration *> argumentList;
 };
 
 
@@ -525,7 +541,7 @@ public:
         return typePtr.get();
     }
 
-    const Expression* getId() const {
+    const IdExpression* getId() const {
         return identifier.get();
     }
 private:
@@ -621,11 +637,11 @@ public:
         return body.get();
     }
 
-    const Expression* getID() const {
+    const IdExpression* getID() const {
         return id.get();
     }
 private:
-    std::unique_ptr<Expression> id;
+    std::unique_ptr<IdExpression> id;
     std::unique_ptr<Type> typePtr;
     std::unique_ptr<MethodList> list;
     std::unique_ptr<MethodBody> body ;
@@ -652,17 +668,17 @@ public:
         return methodList.get();
     }
 
-    const Expression* getClassName() const {
+    const IdExpression* getClassName() const {
         return classname.get();
     }
-    const Expression* getExtendsName() const {
+    const IdExpression* getExtendsName() const {
                 return id_ext.get();
     }
 private:
     std::unique_ptr<VarDeclarationList> varDList;
     std::unique_ptr< MethodDeclarationClass > methodList;
-    std::unique_ptr<Expression> classname;
-    std::unique_ptr<Expression> id_ext = nullptr;
+    std::unique_ptr<IdExpression> classname;
+    std::unique_ptr<IdExpression> id_ext = nullptr;
 };
 
 class ClassDeclarations {
