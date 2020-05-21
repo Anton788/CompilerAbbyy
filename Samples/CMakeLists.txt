@@ -14,4 +14,11 @@ foreach(file ${samples})
             WORKING_DIRECTORY ${samples_dir}
     )
 
+    add_test(
+            NAME MemoryTest${filename}.java
+            COMMAND valgrind ${CMAKE_BINARY_DIR}/Lexer lexer ${CMAKE_SOURCE_DIR}/Samples/${filename}.java
+            WORKING_DIRECTORY ${samples_dir}
+    )
+
 endforeach()
+
