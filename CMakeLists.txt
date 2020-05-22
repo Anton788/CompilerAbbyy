@@ -21,6 +21,6 @@ add_executable(
         ${CMAKE_SOURCE_DIR}/sources/SymbolVisitor.cpp
         ${FLEX_MyLexer_OUTPUTS}
         ${BISON_MyParser_OUTPUTS}
-)
+        sources/visitor_typechecker.h sources/visitor_typechecker.cpp)
 target_include_directories( Lexer PRIVATE ${CMAKE_BINARY_DIR} )
 target_include_directories( Lexer PRIVATE ${CMAKE_SOURCE_DIR}/sources )
