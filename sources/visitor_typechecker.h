@@ -15,7 +15,7 @@
 
 
 
-class VisitorTypecheckerBuilder: Visitor{
+class VisitorTypecheckerBuilder: public Visitor{
     public:
         explicit VisitorTypecheckerBuilder(PTableGlobal symb_table) :
                 table_(symb_table)
@@ -28,34 +28,7 @@ class VisitorTypecheckerBuilder: Visitor{
         }
 
         bool check_errors() const { return no_mistakes_; }
-    virtual void visit(const NumExpression* expr);
-    virtual void visit(const BinopExpression* expr);
-    virtual void visit(const BoolExpression* expr);
-    virtual void visit(const IdExpression* expr);
-    virtual void visit(const ExpressionSquare* expr);
-    virtual void visit(const ExpressionLength* expr);
-    virtual void visit(const ExpressionNegation* expr);
-    virtual void visit(const ThisExpression* expr);
-    virtual void visit(const AssignState* statement);
-    virtual void visit(const IntType* type);
-    virtual void visit(const BoolType* type);
-    virtual void visit(const ArrayIntType* type);
-    virtual void visit(const IdType* type);
-    virtual void visit(const VarDeclaration* var_declaration);
-    virtual void visit(const MethodBody* method_body);
-    virtual void visit(const MethodDeclaration* method_declaration);
-    virtual void visit(const ClassDeclaration* class_var);
-    virtual void visit(const MainClass* main_class);
-    virtual void visit(const Goal* goal);
-    virtual void visit(const ExpressionNewId* expr);
-    virtual void visit(const ExpressionNewInt* expr);
-    virtual void visit(const CallExpression* expr);
-    virtual void visit(const AssignArrayState* statement);
-    virtual void visit(const PrintState* statement);
-    virtual void visit(const WhileState* statement);
-    virtual void visit(const ConditionState* statement);
 
-    virtual    void visit(const ObjState* statement);
 
 private:
         bool no_mistakes_ = true;
@@ -66,6 +39,33 @@ private:
         PClassInfo curr_class_info_;
         PMethodInfo curr_method_info_;
 
+    void visit(const NumExpression* expr);
+    void visit(const BinopExpression* expr);
+    void visit(const BoolExpression* expr);
+    void visit(const IdExpression* expr);
+    void visit(const ExpressionSquare* expr);
+    void visit(const ExpressionLength* expr);
+    void visit(const ExpressionNegation* expr);
+    void visit(const ThisExpression* expr);
+    void visit(const AssignState* statement);
+    void visit(const IntType* type);
+    void visit(const BoolType* type);
+    void visit(const ArrayIntType* type);
+    void visit(const IdType* type);
+    void visit(const VarDeclaration* var_declaration);
+    void visit(const MethodBody* method_body);
+    void visit(const MethodDeclaration* method_declaration);
+    void visit(const ClassDeclaration* class_var);
+    void visit(const MainClass* main_class);
+    void visit(const Goal* goal);
+    void visit(const ExpressionNewId* expr);
+    void visit(const ExpressionNewInt* expr);
+    void visit(const CallExpression* expr);
+    void visit(const AssignArrayState* statement);
+    void visit(const PrintState* statement);
+    void visit(const WhileState* statement);
+    void visit(const ConditionState* statement);
+    void visit(const ObjState* statement);
         bool DFScheckCycle(const std::unordered_map<std::string, std::vector<std::string> >& graph,  const std::string& vert,
                            std::unordered_map<std::string, int>& used) const {
             used[vert] = 1;

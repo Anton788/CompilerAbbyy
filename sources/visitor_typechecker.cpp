@@ -72,7 +72,7 @@ void VisitorTypecheckerBuilder::visit(const VarDeclaration* var_declaration) {
     var_declaration->getType()->accept(this);
 }
 
-void VisitorTypecheckerBuilder::visit(const Type* type) {
+void VisitorTypecheckerBuilder::visit(const IdType* type) {
     if (!checkType(type->getType())) {
         std::cout << "!!! Error: Uknown type " << type->getType();
         //print_error_place(type->getPos());
