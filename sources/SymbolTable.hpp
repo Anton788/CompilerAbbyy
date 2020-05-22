@@ -125,6 +125,10 @@
             }
         }
 
+        bool HasPublicFunc(const std::string& name) const {
+            return table_method_.find(name) != table_method_.end();
+        }
+
         int getAddress(const std::string& name) const {
             return address_table_.at(name);
         }
