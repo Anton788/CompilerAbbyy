@@ -22,7 +22,7 @@ void VisitorTypecheckerBuilder::visit(const Goal* goal) {
             class_names.insert(pclass->getClassName()->getId());
         }
         else {
-            std::cout << "!!! Error: Redifinition of class " << pclass->getClassName()->getId();
+            std::cout << "DefineError: Redefinition of class " << pclass->getClassName()->getId();
             //print_error_place(pclass->getPos());
         }
     }
@@ -38,14 +38,14 @@ void VisitorTypecheckerBuilder::visit(const ClassDeclaration* class_var) {
     curr_class_info_ = table_->getClass(class_var->getClassName()->getId());
 
     if ((class_var->getExtendsName() != nullptr) && (class_var->getExtendsName()->getId() != "" && !checkType(class_var->getExtendsName()->getId()))) {
-        std::cout << "ERROR: Uknown parent class " << class_var->getExtendsName()->getId()<<endl;
+        std::cout << "DefineERROR: Uknown parent class " << class_var->getExtendsName()->getId()<<endl;
     }
 
 
     std::unordered_set<std::string> vars;
     for (const auto& var: class_var->getVarList()->getVarList()) {
         if (vars.find(var->getId()->getId()) != vars.end()) {
-            std::cout << "!!! Error: Repeted definition of variable " << var->getId()->getId()<<endl;
+            std::cout << "DefineError: Repeted definition of variable " << var->getId()->getId()<<endl;
         }
         vars.insert(var->getId()->getId());
         var->accept(this);
@@ -53,7 +53,7 @@ void VisitorTypecheckerBuilder::visit(const ClassDeclaration* class_var) {
     std::unordered_set<std::string> methods;
     for (const auto& method: class_var->getMethodList()->getList()) {
         if (methods.find(method->getID()->getId()) != methods.end()) {
-            std::cout << "!!! Error: repeted definition of function " << method->getID()->getId()<<endl;
+            std::cout << "DefFuncError: repeted definition of function " << method->getID()->getId()<<endl;
             //print_error_place(method->getPos());
         }
         methods.insert(method->getID()->getId());
@@ -65,7 +65,7 @@ void VisitorTypecheckerBuilder::visit(const ClassDeclaration* class_var) {
 void VisitorTypecheckerBuilder::visit(const VarDeclaration* var_declaration) {
 
     if (checkType(var_declaration->getId()->getId())) {
-        std::cout << "!!! Error: variable called as class " << var_declaration->getId()->getId()<<endl;
+        std::cout << "VarError: variable called as class " << var_declaration->getId()->getId()<<endl;
         //print_error_place(var_declaration->getPos());
     }
     var_declaration->getType()->accept(this);
@@ -73,7 +73,7 @@ void VisitorTypecheckerBuilder::visit(const VarDeclaration* var_declaration) {
 
 void VisitorTypecheckerBuilder::visit(const IdType* type) {
     if (!checkType(type->getType())) {
-        std::cout << "!!! Error: Uknown type " << type->getType()<<endl;
+        std::cout << "TypeError: Uknown type " << type->getType()<<endl;
         //print_error_place(type->getPos());
     }
 }
@@ -84,7 +84,7 @@ void VisitorTypecheckerBuilder::visit(const MethodDeclaration* method_declaratio
     std::unordered_set<std::string> arg_names;
     for (const auto& type_var: method_declaration->getMethodList()->getArgList()) {
         if (arg_names.find(type_var.second->getId()) != arg_names.end()) {
-            std::cout << "!!! Error: Repeted definition of argument " << type_var.second->getId()<<endl;
+            std::cout << "DefArgError: Repeted definition of argument " << type_var.second->getId()<<endl;
         }
         type_var.first->accept(this);
         arg_names.insert(type_var.second->getId());
@@ -104,7 +104,7 @@ void VisitorTypecheckerBuilder::visit(const MethodBody* method_body) {
     std::unordered_set<std::string> vars;
     for (const auto& var: method_body->getVarList()->getVarList()) {
         if (vars.find(var->getId()->getId()) != vars.end()) {
-            std::cout << "!!! Error: Repeted definition of variable " << var->getId()->getId()<<endl;
+            std::cout << "DefVarError: Repeted definition of variable " << var->getId()->getId()<<endl;
             //print_error_place(var->getPos());
         }
         vars.insert(var->getId()->getId());
@@ -128,7 +128,7 @@ void VisitorTypecheckerBuilder::visit(const IdExpression* expr) {
     if (curr_method_info_->hasVar(expr->getId())) {
         type_stack_.push_back(curr_method_info_->getVarType(expr->getId()));
     } else {
-        std::cout << "!!! Error: Not defined variable " << expr->getId()<<endl;
+        std::cout << "DefVarError: Not defined variable " << expr->getId()<<endl;
         type_stack_.push_back("error_id_type");
     }
 }
@@ -159,7 +159,7 @@ void VisitorTypecheckerBuilder::visit(const BinopExpression* expr) {
         check_and_print_invalid_type(left_type, "INT");
         type_stack_.push_back("Boolean");
     } else {
-        std::cout << "!!! Error: Unknown operator: " << expr->OpCode()<<endl;
+        std::cout << "DefOperatorError: Unknown operator: " << expr->OpCode()<<endl;
         //print_error_place(expr->getPos());
         assert(false);
     }
@@ -200,7 +200,7 @@ void VisitorTypecheckerBuilder::visit(const ThisExpression* expr) {
 void VisitorTypecheckerBuilder::visit(const ExpressionNewId* expr) {
     std::string curr_type = expr->getExpr()->getId();
     if (!checkType(curr_type)) {
-        std::cout << "!!! Error: Uknown type " << curr_type << endl;
+        std::cout << "TypeError: Uknown type " << curr_type << endl;
         //print_error_place(expr->getPos());
     }
     type_stack_.push_back(curr_type);
@@ -224,7 +224,7 @@ void VisitorTypecheckerBuilder::visit(const ExpressionNewId* expr) {
         PClassInfo curr_class = table_->getClass(curr_type);
         std::string func_name = expr->getId()->getId();
         if (!curr_class->HasPublicFunc(func_name)) {
-            std::cout << "ERROR: Function " << func_name << " not found in " << curr_class->getName()<<endl;
+            std::cout << "FuncERROR: Function " << func_name << " not found in " << curr_class->getName()<<endl;
             type_stack_.push_back("error_call_type");
             return;
         }

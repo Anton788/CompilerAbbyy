@@ -23,7 +23,7 @@ class VisitorTypecheckerBuilder: public Visitor{
         void check_and_print_invalid_type(const std::string& curr_type,
                                           const std::string& expected_type) {
             if (!CompareTypes(expected_type, curr_type)) {
-                std::cout << "ERROR: Wrong type: " << curr_type <<"; expected: " << expected_type;
+                std::cout << "TypeError: Wrong type: " << curr_type <<",  expected: " << expected_type;
             }
         }
 
@@ -78,7 +78,7 @@ private:
                     continue;
                 }
                 if (used[chld] == 1) {
-                    std::cout << "ERROR:  dependecies cycle : " <<chld <<" -> " << vert;
+                    std::cout << "RuntimeError:  dependecies cycle : " <<chld <<" -> " << vert;
                     return false;
                 }
                 if (!DFScheckCycle(graph, chld, used)) {
