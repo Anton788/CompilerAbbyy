@@ -24,3 +24,5 @@ add_executable(
         sources/visitor_typechecker.cpp)
 target_include_directories( Lexer PRIVATE ${CMAKE_BINARY_DIR} )
 target_include_directories( Lexer PRIVATE ${CMAKE_SOURCE_DIR}/sources )
+
+add_subdirectory(Samples)
