@@ -454,7 +454,7 @@ public:
         v->visit(this);
     }
     virtual std::string getType() const override {
-        return "array";
+        return "Array";
     }
 };
 
@@ -468,7 +468,7 @@ public:
     }
 
     virtual std::string getType() const override {
-        return "bool";
+        return "Boolean";
     }
 };
 
@@ -482,7 +482,7 @@ public:
     }
 
     virtual std::string getType() const override {
-        return "int";
+        return "INT";
     }
 };
 

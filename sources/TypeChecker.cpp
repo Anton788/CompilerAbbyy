@@ -1,4 +1,4 @@
-#include "visitor_typechecker.h"
+#include "TypeChecker.h"
 #include <unordered_map>
 #include <vector>
 #include <string>
@@ -37,16 +37,15 @@ void VisitorTypecheckerBuilder::visit(const ClassDeclaration* class_var) {
 
     curr_class_info_ = table_->getClass(class_var->getClassName()->getId());
 
-
-    if (class_var->getExtendsName()->getId() != "" && !checkType(class_var->getExtendsName()->getId())) {
-        std::cout << "!!! Error: Uknown parent class " << class_var->getExtendsName()->getId();
-        //print_error_place(class_var->getPos());
+    if ((class_var->getExtendsName() != nullptr) && (class_var->getExtendsName()->getId() != "" && !checkType(class_var->getExtendsName()->getId()))) {
+        std::cout << "ERROR: Uknown parent class " << class_var->getExtendsName()->getId()<<endl;
     }
+
+
     std::unordered_set<std::string> vars;
     for (const auto& var: class_var->getVarList()->getVarList()) {
         if (vars.find(var->getId()->getId()) != vars.end()) {
-            std::cout << "!!! Error: Repeted definition of variable " << var->getId()->getId();
-            //print_error_place(var->getPos());
+            std::cout << "!!! Error: Repeted definition of variable " << var->getId()->getId()<<endl;
         }
         vars.insert(var->getId()->getId());
         var->accept(this);
@@ -54,7 +53,7 @@ void VisitorTypecheckerBuilder::visit(const ClassDeclaration* class_var) {
     std::unordered_set<std::string> methods;
     for (const auto& method: class_var->getMethodList()->getList()) {
         if (methods.find(method->getID()->getId()) != methods.end()) {
-            std::cout << "!!! Error: repeted definition of function " << method->getID()->getId();
+            std::cout << "!!! Error: repeted definition of function " << method->getID()->getId()<<endl;
             //print_error_place(method->getPos());
         }
         methods.insert(method->getID()->getId());
@@ -65,8 +64,8 @@ void VisitorTypecheckerBuilder::visit(const ClassDeclaration* class_var) {
 
 void VisitorTypecheckerBuilder::visit(const VarDeclaration* var_declaration) {
 
-    if (checkType(var_declaration->getType()->getType())) {
-        std::cout << "!!! Error: variable called as class " << var_declaration->getId()->getId();
+    if (checkType(var_declaration->getId()->getId())) {
+        std::cout << "!!! Error: variable called as class " << var_declaration->getId()->getId()<<endl;
         //print_error_place(var_declaration->getPos());
     }
     var_declaration->getType()->accept(this);
@@ -74,7 +73,7 @@ void VisitorTypecheckerBuilder::visit(const VarDeclaration* var_declaration) {
 
 void VisitorTypecheckerBuilder::visit(const IdType* type) {
     if (!checkType(type->getType())) {
-        std::cout << "!!! Error: Uknown type " << type->getType();
+        std::cout << "!!! Error: Uknown type " << type->getType()<<endl;
         //print_error_place(type->getPos());
     }
 }
@@ -85,7 +84,7 @@ void VisitorTypecheckerBuilder::visit(const MethodDeclaration* method_declaratio
     std::unordered_set<std::string> arg_names;
     for (const auto& type_var: method_declaration->getMethodList()->getArgList()) {
         if (arg_names.find(type_var.second->getId()) != arg_names.end()) {
-            std::cout << "!!! Error: Repeted definition of argument " << type_var.second->getId();
+            std::cout << "!!! Error: Repeted definition of argument " << type_var.second->getId()<<endl;
         }
         type_var.first->accept(this);
         arg_names.insert(type_var.second->getId());
@@ -105,7 +104,7 @@ void VisitorTypecheckerBuilder::visit(const MethodBody* method_body) {
     std::unordered_set<std::string> vars;
     for (const auto& var: method_body->getVarList()->getVarList()) {
         if (vars.find(var->getId()->getId()) != vars.end()) {
-            std::cout << "!!! Error: Repeted definition of variable " << var->getId()->getId();
+            std::cout << "!!! Error: Repeted definition of variable " << var->getId()->getId()<<endl;
             //print_error_place(var->getPos());
         }
         vars.insert(var->getId()->getId());
@@ -129,8 +128,7 @@ void VisitorTypecheckerBuilder::visit(const IdExpression* expr) {
     if (curr_method_info_->hasVar(expr->getId())) {
         type_stack_.push_back(curr_method_info_->getVarType(expr->getId()));
     } else {
-        std::cout << "!!! Error: Not defined variable " << expr->getId();
-        //print_error_place(expr->getPos());
+        std::cout << "!!! Error: Not defined variable " << expr->getId()<<endl;
         type_stack_.push_back("error_id_type");
     }
 }
@@ -161,7 +159,7 @@ void VisitorTypecheckerBuilder::visit(const BinopExpression* expr) {
         check_and_print_invalid_type(left_type, "INT");
         type_stack_.push_back("Boolean");
     } else {
-        std::cout << "!!! Error: Unknown operator: " << expr->OpCode();
+        std::cout << "!!! Error: Unknown operator: " << expr->OpCode()<<endl;
         //print_error_place(expr->getPos());
         assert(false);
     }
@@ -202,7 +200,7 @@ void VisitorTypecheckerBuilder::visit(const ThisExpression* expr) {
 void VisitorTypecheckerBuilder::visit(const ExpressionNewId* expr) {
     std::string curr_type = expr->getExpr()->getId();
     if (!checkType(curr_type)) {
-        std::cout << "!!! Error: Uknown type " << curr_type;
+        std::cout << "!!! Error: Uknown type " << curr_type << endl;
         //print_error_place(expr->getPos());
     }
     type_stack_.push_back(curr_type);
@@ -226,7 +224,7 @@ void VisitorTypecheckerBuilder::visit(const ExpressionNewId* expr) {
         PClassInfo curr_class = table_->getClass(curr_type);
         std::string func_name = expr->getId()->getId();
         if (!curr_class->HasPublicFunc(func_name)) {
-            std::cout << "ERROR: Function " << func_name << " not found in " << curr_class->getName();
+            std::cout << "ERROR: Function " << func_name << " not found in " << curr_class->getName()<<endl;
             type_stack_.push_back("error_call_type");
             return;
         }
@@ -234,7 +232,7 @@ void VisitorTypecheckerBuilder::visit(const ExpressionNewId* expr) {
         std::string returned_type = curr_method->getReturnType();
         if (expr->getArgs()->getArgList().size() != curr_method->getArgsNum()) {
             std::cout << "ERROR: Expected " << curr_method->getArgsNum() << " args, have " << expr->getArgs()->getArgList().size()
-                      << " in function " << func_name <<" of class " << curr_type;
+                      << " in function " << func_name <<" of class " << curr_type<<endl;
             type_stack_.push_back(returned_type);
             return;
         }
@@ -253,7 +251,7 @@ void VisitorTypecheckerBuilder::visit(const ExpressionNewId* expr) {
         if (curr_method_info_->hasVar(id)) {
             type_stack_.push_back(curr_method_info_->getVarType(id));
         } else {
-            std::cout << "ERROR: Not defined variable " << id;
+            std::cout << "ERROR: Not defined variable " << id<<endl;
             return;
         }
         statement->getValue()->accept(this);
@@ -267,7 +265,7 @@ void VisitorTypecheckerBuilder::visit(const ExpressionNewId* expr) {
     void VisitorTypecheckerBuilder::visit(const AssignArrayState* statement) {
         std::string id = statement->getArray()->getId();
         if (!curr_method_info_->hasVar(id)) {
-            std::cout << "ERROR: Not defined variable " << id;
+            std::cout << "ERROR: Not defined variable " << id<<endl;
             return;
         }
         check_and_print_invalid_type(curr_method_info_->getVarType(id), "Array");
