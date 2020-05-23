@@ -232,7 +232,7 @@ public:
         v->visit(this);
     }
 
-    const Expression *getExpr() const {
+    const IdExpression *getExpr() const {
         return expr.get();
     }
 
@@ -295,7 +295,7 @@ public:
             index(index),
             value(value) {}
 
-    const Expression* getArray() const { return name_array.get(); }
+    const IdExpression* getArray() const { return name_array.get(); }
 
     const Expression *getIndex() const {
         return index.get();
@@ -322,7 +322,7 @@ public:
             state(new IdExpression(state_)),
             value(value) {}
 
-    const Expression* getState() const { return state.get(); }
+    const IdExpression* getState() const { return state.get(); }
 
     const Expression *getValue() const {
         return value.get();
@@ -454,7 +454,7 @@ public:
         v->visit(this);
     }
     virtual std::string getType() const override {
-        return "array";
+        return "Array";
     }
 };
 
@@ -468,7 +468,7 @@ public:
     }
 
     virtual std::string getType() const override {
-        return "bool";
+        return "Boolean";
     }
 };
 
@@ -482,7 +482,7 @@ public:
     }
 
     virtual std::string getType() const override {
-        return "int";
+        return "INT";
     }
 };
 

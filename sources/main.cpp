@@ -6,6 +6,7 @@
 #include <Visitor.h>
 #include <PrintVisitor.h>
 #include <SymbolVisitor.h>
+#include <TypeChecker.h>
 #include <kParser.hpp>
 #include <kLexer.h>
 
@@ -16,12 +17,14 @@ enum TCommand {
     C_Print,
     C_Lexer,
     C_Calc,
+    C_Check,
 };
 
 unordered_map<string,TCommand> commandMap = {
         { "print", C_Print },
         { "lexer", C_Lexer },
         { "calc", C_Calc },
+        {"check", C_Check},
 };
 
 int main( int argc, char* argv[] )
@@ -87,6 +90,36 @@ int main( int argc, char* argv[] )
         }
         delete result;
     }
+
+    if( cmd->second == C_Check ) {
+        Goal* result = 0;
+        if( kparse( lexer, result ) ) {
+            status = -13;
+        } else {
+            SyntaxTreePrinter v;
+            VisitorSymtableBuilder v_symbol_table;
+
+            string yellow_text_start = "\033[33m";
+            string yellow_text_end = "\033[0m";
+
+            cout<<endl;
+             cout << yellow_text_start << "Symbol Table:" << yellow_text_end << std::endl;
+            result->accept(&v_symbol_table);
+
+            cout << yellow_text_start << "TypeChecker:" << yellow_text_end << std::endl;
+            VisitorTypecheckerBuilder v_type_checker (v_symbol_table.getTable());
+            result->accept(&v_type_checker);
+
+            if (!v_type_checker.check_errors()) {
+                exit(1);
+            }
+
+        }
+        delete result;
+    }
+
+
+
     fout.close();
     k_delete_buffer( lexerState, lexer );
     klex_destroy( lexer );

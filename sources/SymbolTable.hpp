@@ -66,15 +66,15 @@
         }
 
         void Print() const {
-            std::cout <<"    Param types: ";
+            std::cout <<"    PARAM TYPES: ";
             for (const auto& param_type: param_types_) {
                 std::cout << param_type <<", ";
             }
             std::cout <<"\n";
-            std::cout <<"    Return type: " << return_type_ <<"\n";
-            std::cout <<"    vars:\n";
+            std::cout <<"    RETURN TYPE: " << return_type_ <<"\n";
+            std::cout <<"    VARIABLES:\n";
             for (const auto& var: table_vars_) {
-                std::cout << "      " <<var.second <<" "<<var.first << " " << address_table_.at(var.first)<<"\n";
+                std::cout << "      " <<var.second <<" "<<var.first << " , address at table:" << address_table_.at(var.first)<<"\n";
             }
         }
     private:
@@ -125,6 +125,10 @@
             }
         }
 
+        bool HasPublicFunc(const std::string& name) const {
+            return table_method_.find(name) != table_method_.end();
+        }
+
         int getAddress(const std::string& name) const {
             return address_table_.at(name);
         }
@@ -154,12 +158,12 @@
         }
 
         void Print() const {
-            std::cout <<" Parent: " << parent_ <<"\n";
+            std::cout <<" PARENT: " << parent_ <<"\n";
             std::cout <<" Methods:\n";
             for (const auto& method: table_method_) {
-                std::cout <<"  method "<<method.first<<";\n";
+                std::cout <<"  METHOD: "<<method.first<<";\n";
                 method.second->Print();
-                std::cout <<"-----------------------------\n";
+                std::cout <<".............................\n";
             }
         }
     private:
@@ -201,9 +205,9 @@
 
         void Print() const {
             for (const auto& value : table_) {
-                std::cout <<"class "<< value.first <<":\n";
+                std::cout <<"CLASS "<< value.first <<":\n";
                 value.second->Print();
-                std::cout <<"==========================\n";
+                std::cout <<"__________END SECTION_______\n";
             }
         }
     private:
