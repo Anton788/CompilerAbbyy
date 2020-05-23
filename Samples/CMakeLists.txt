@@ -1,10 +1,13 @@
 cmake_minimum_required(VERSION 3.10)
 
-set(samples_dir ${CMAKE_CURRENT_SOURCE_DIR})
+set(good_samples_dir ${CMAKE_CURRENT_SOURCE_DIR}/good_samples)
+set(bad_samples_dir ${CMAKE_CURRENT_SOURCE_DIR}/bad_samples)
 
 enable_testing()
 
-file(GLOB good_samples ${samples_dir}/good_samples/*.java)
+file(GLOB good_samples ${good_samples_dir}/*.java)
+file(GLOB bad_samples ${bad_samples_dir}/*.java)
+
 foreach(file ${good_samples})
     get_filename_component(filename ${file} NAME_WE)
     add_test(
@@ -19,18 +22,17 @@ foreach(file ${good_samples})
     )
 endforeach()
 
-file(GLOB bad_samples ${samples_dir}/bad_samples/*.java)
 foreach(file ${bad_samples})
     get_filename_component(filename ${file} NAME_WE)
 
     add_test(
             NAME BadTest${filename}.java
-            COMMAND ${CMAKE_BINARY_DIR}/Lexer lexer ${CMAKE_SOURCE_DIR}/Samples/bad_samples/${filename}.java
+            COMMAND ${CMAKE_BINARY_DIR}/Lexer check ${CMAKE_SOURCE_DIR}/Samples/bad_samples/${filename}.java
             WORKING_DIRECTORY ${samples_dir}
     )
     add_test(
             NAME BadMemoryTest${filename}.java
-            COMMAND valgrind ${CMAKE_BINARY_DIR}/Lexer lexer ${CMAKE_SOURCE_DIR}/Samples/bad_samples/${filename}.java
+            COMMAND valgrind ${CMAKE_BINARY_DIR}/Lexer check ${CMAKE_SOURCE_DIR}/Samples/bad_samples/${filename}.java
             WORKING_DIRECTORY ${samples_dir}
     )
 endforeach()

@@ -24,6 +24,7 @@ void VisitorTypecheckerBuilder::visit(const Goal* goal) {
         else {
             std::cout << "DefineError: Redefinition of class " << pclass->getClassName()->getId();
             //print_error_place(pclass->getPos());
+            throw 1;
         }
     }
 }
@@ -39,6 +40,7 @@ void VisitorTypecheckerBuilder::visit(const ClassDeclaration* class_var) {
 
     if ((class_var->getExtendsName() != nullptr) && (class_var->getExtendsName()->getId() != "" && !checkType(class_var->getExtendsName()->getId()))) {
         std::cout << "DefineERROR: Uknown parent class " << class_var->getExtendsName()->getId()<<endl;
+        throw 1;
     }
 
 
@@ -46,6 +48,7 @@ void VisitorTypecheckerBuilder::visit(const ClassDeclaration* class_var) {
     for (const auto& var: class_var->getVarList()->getVarList()) {
         if (vars.find(var->getId()->getId()) != vars.end()) {
             std::cout << "DefineError: Repeted definition of variable " << var->getId()->getId()<<endl;
+            throw 1;
         }
         vars.insert(var->getId()->getId());
         var->accept(this);
@@ -54,6 +57,7 @@ void VisitorTypecheckerBuilder::visit(const ClassDeclaration* class_var) {
     for (const auto& method: class_var->getMethodList()->getList()) {
         if (methods.find(method->getID()->getId()) != methods.end()) {
             std::cout << "DefFuncError: repeted definition of function " << method->getID()->getId()<<endl;
+            throw 1;
             //print_error_place(method->getPos());
         }
         methods.insert(method->getID()->getId());
@@ -66,6 +70,7 @@ void VisitorTypecheckerBuilder::visit(const VarDeclaration* var_declaration) {
 
     if (checkType(var_declaration->getId()->getId())) {
         std::cout << "VarError: variable called as class " << var_declaration->getId()->getId()<<endl;
+        throw 1;
         //print_error_place(var_declaration->getPos());
     }
     var_declaration->getType()->accept(this);
@@ -74,7 +79,9 @@ void VisitorTypecheckerBuilder::visit(const VarDeclaration* var_declaration) {
 void VisitorTypecheckerBuilder::visit(const IdType* type) {
     if (!checkType(type->getType())) {
         std::cout << "TypeError: Uknown type " << type->getType()<<endl;
+        throw 1;
         //print_error_place(type->getPos());
+        throw 1;
     }
 }
 
@@ -85,6 +92,7 @@ void VisitorTypecheckerBuilder::visit(const MethodDeclaration* method_declaratio
     for (const auto& type_var: method_declaration->getMethodList()->getArgList()) {
         if (arg_names.find(type_var.second->getId()) != arg_names.end()) {
             std::cout << "DefArgError: Repeted definition of argument " << type_var.second->getId()<<endl;
+            throw 1;
         }
         type_var.first->accept(this);
         arg_names.insert(type_var.second->getId());
@@ -105,6 +113,7 @@ void VisitorTypecheckerBuilder::visit(const MethodBody* method_body) {
     for (const auto& var: method_body->getVarList()->getVarList()) {
         if (vars.find(var->getId()->getId()) != vars.end()) {
             std::cout << "DefVarError: Repeted definition of variable " << var->getId()->getId()<<endl;
+            throw 1;
             //print_error_place(var->getPos());
         }
         vars.insert(var->getId()->getId());
@@ -129,7 +138,9 @@ void VisitorTypecheckerBuilder::visit(const IdExpression* expr) {
         type_stack_.push_back(curr_method_info_->getVarType(expr->getId()));
     } else {
         std::cout << "DefVarError: Not defined variable " << expr->getId()<<endl;
+
         type_stack_.push_back("error_id_type");
+        throw 1;
     }
 }
 enum TOpCode {
@@ -162,6 +173,7 @@ void VisitorTypecheckerBuilder::visit(const BinopExpression* expr) {
         std::cout << "DefOperatorError: Unknown operator: " << expr->OpCode()<<endl;
         //print_error_place(expr->getPos());
         assert(false);
+        throw 1;
     }
 }
 
@@ -202,6 +214,7 @@ void VisitorTypecheckerBuilder::visit(const ExpressionNewId* expr) {
     if (!checkType(curr_type)) {
         std::cout << "TypeError: Uknown type " << curr_type << endl;
         //print_error_place(expr->getPos());
+        throw 1;
     }
     type_stack_.push_back(curr_type);
 }
@@ -219,6 +232,7 @@ void VisitorTypecheckerBuilder::visit(const ExpressionNewId* expr) {
         type_stack_.pop_back();
         if (!checkType(curr_type)) {
             type_stack_.push_back("error_call_type");
+            throw 1;
             return;
         }
         PClassInfo curr_class = table_->getClass(curr_type);
@@ -226,6 +240,7 @@ void VisitorTypecheckerBuilder::visit(const ExpressionNewId* expr) {
         if (!curr_class->HasPublicFunc(func_name)) {
             std::cout << "FuncERROR: Function " << func_name << " not found in " << curr_class->getName()<<endl;
             type_stack_.push_back("error_call_type");
+            throw 1;
             return;
         }
         PMethodInfo curr_method = curr_class->getMethod(func_name);
@@ -234,6 +249,7 @@ void VisitorTypecheckerBuilder::visit(const ExpressionNewId* expr) {
             std::cout << "ERROR: Expected " << curr_method->getArgsNum() << " args, have " << expr->getArgs()->getArgList().size()
                       << " in function " << func_name <<" of class " << curr_type<<endl;
             type_stack_.push_back(returned_type);
+            throw 1;
             return;
         }
         for (int ind = 0; ind < static_cast<int>(expr->getArgs()->getArgList().size()); ++ind) {
@@ -252,7 +268,8 @@ void VisitorTypecheckerBuilder::visit(const ExpressionNewId* expr) {
             type_stack_.push_back(curr_method_info_->getVarType(id));
         } else {
             std::cout << "ERROR: Not defined variable " << id<<endl;
-            return;
+            throw 1;
+            //return;
         }
         statement->getValue()->accept(this);
         std::string right_type = type_stack_.back();
@@ -266,6 +283,7 @@ void VisitorTypecheckerBuilder::visit(const ExpressionNewId* expr) {
         std::string id = statement->getArray()->getId();
         if (!curr_method_info_->hasVar(id)) {
             std::cout << "ERROR: Not defined variable " << id<<endl;
+            throw 1;
             return;
         }
         check_and_print_invalid_type(curr_method_info_->getVarType(id), "Array");
