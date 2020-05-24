@@ -9,12 +9,12 @@ foreach(file ${good_samples})
     get_filename_component(filename ${file} NAME_WE)
     add_test(
             NAME GoodTest${filename}.java
-            COMMAND ${CMAKE_BINARY_DIR}/Lexer lexer ${CMAKE_SOURCE_DIR}/Samples/good_samples/${filename}.java
+            COMMAND ${CMAKE_BINARY_DIR}/Lexer check ${CMAKE_SOURCE_DIR}/Samples/good_samples/${filename}.java
             WORKING_DIRECTORY ${samples_dir}
     )
     add_test(
             NAME GoodMemoryTest${filename}.java
-            COMMAND valgrind ${CMAKE_BINARY_DIR}/Lexer lexer ${CMAKE_SOURCE_DIR}/Samples/good_samples/${filename}.java
+            COMMAND valgrind ${CMAKE_BINARY_DIR}/Lexer check ${CMAKE_SOURCE_DIR}/Samples/good_samples/${filename}.java
             WORKING_DIRECTORY ${samples_dir}
     )
 endforeach()
@@ -25,13 +25,13 @@ foreach(file ${bad_samples})
 
     add_test(
             NAME BadTest${filename}.java
-            COMMAND ${CMAKE_BINARY_DIR}/Lexer lexer ${CMAKE_SOURCE_DIR}/Samples/bad_samples/${filename}.java
+            COMMAND ${CMAKE_BINARY_DIR}/Lexer ckeck  ${CMAKE_SOURCE_DIR}/Samples/bad_samples/${filename}.java
             WORKING_DIRECTORY ${samples_dir}
     )
 
     add_test(
             NAME BadMemoryTest${filename}.java
-            COMMAND valgrind ${CMAKE_BINARY_DIR}/Lexer lexer ${CMAKE_SOURCE_DIR}/Samples/bad_samples/${filename}.java
+            COMMAND valgrind ${CMAKE_BINARY_DIR}/Lexer ckeck ${CMAKE_SOURCE_DIR}/Samples/bad_samples/${filename}.java
             WORKING_DIRECTORY ${samples_dir}
     )
 endforeach()
