@@ -8,6 +8,7 @@ using namespace std;
 // static body - порядок MetArg переименовать в statement list ArgState  и порядок полей
 int SyntaxTreePrinter::globalIndex = 0;
 
+
 void SyntaxTreePrinter::visit(const NumExpression *e) {
     int topIndex = globalIndex++;
     top = to_string(topIndex);
